@@ -1,11 +1,77 @@
-export const userProfile = {
-  name: "Jordan",
-  creditScore: 682,
-  scoreChange: +12,
-  scoreRange: "Fair",
-  memberSince: "2024",
-  nextGoal: "Buy a car in 2026",
+export const profiles = {
+  jordan: {
+    name: "Jordan",
+    creditScore: 682,
+    scoreChange: +12,
+    scoreRange: "Fair",
+    memberSince: "2024",
+    initialStats: {
+      utilization: 42,
+      paymentsOnTime: 47,
+      paymentsTotal: 49,
+      creditAge: 2.3,
+      accountCount: 2,
+      inquiries: 1
+    },
+    history: [
+      { month: 'Aug', score: 620 },
+      { month: 'Sep', score: 645 },
+      { month: 'Oct', score: 658 },
+      { month: 'Nov', score: 670 },
+      { month: 'Dec', score: 675 },
+      { month: 'Jan', score: 682 },
+    ]
+  },
+  casey: {
+    name: "Casey",
+    creditScore: 785,
+    scoreChange: +5,
+    scoreRange: "Excellent",
+    memberSince: "2021",
+    initialStats: {
+      utilization: 8,
+      paymentsOnTime: 120,
+      paymentsTotal: 120, // Perfect history
+      creditAge: 5.4,
+      accountCount: 8,
+      inquiries: 0
+    },
+    history: [
+      { month: 'Aug', score: 760 },
+      { month: 'Sep', score: 765 },
+      { month: 'Oct', score: 770 },
+      { month: 'Nov', score: 775 },
+      { month: 'Dec', score: 780 },
+      { month: 'Jan', score: 785 },
+    ]
+  },
+  alex: {
+    name: "Alex",
+    creditScore: 540,
+    scoreChange: -15,
+    scoreRange: "Needs Work",
+    memberSince: "2025",
+    initialStats: {
+      utilization: 85,
+      paymentsOnTime: 12,
+      paymentsTotal: 20, // Missed payments
+      creditAge: 0.8,
+      accountCount: 3,
+      inquiries: 4
+    },
+    history: [
+      { month: 'Aug', score: 580 },
+      { month: 'Sep', score: 575 },
+      { month: 'Oct', score: 560 },
+      { month: 'Nov', score: 550 },
+      { month: 'Dec', score: 555 },
+      { month: 'Jan', score: 540 },
+    ]
+  }
 };
+
+export const userProfile = profiles.jordan; // Default
+
 
 export const creditFactors = [
   {
@@ -80,6 +146,7 @@ export const lifeEvents = [
     id: "credit-card",
     name: "Open Credit Card",
     icon: "💳",
+    group: "milestone",
     category: "credit",
     impact: "mixed",
     description: "Opens new credit line",
@@ -90,6 +157,7 @@ export const lifeEvents = [
     id: "car-loan",
     name: "Finance a Car",
     icon: "🚗",
+    group: "milestone",
     category: "loan",
     impact: "mixed",
     description: "Auto loan application",
@@ -100,6 +168,7 @@ export const lifeEvents = [
     id: "apartment",
     name: "Rent Apartment",
     icon: "🏠",
+    group: "milestone",
     category: "housing",
     impact: "neutral",
     description: "Rental application check",
@@ -110,6 +179,7 @@ export const lifeEvents = [
     id: "house",
     name: "Buy a House",
     icon: "🏡",
+    group: "milestone",
     category: "mortgage",
     impact: "major",
     description: "Mortgage application",
@@ -120,6 +190,7 @@ export const lifeEvents = [
     id: "student-loan",
     name: "Pay Off Student Loan",
     icon: "🎓",
+    group: "milestone",
     category: "debt",
     impact: "mixed",
     description: "Close installment account",
@@ -130,13 +201,61 @@ export const lifeEvents = [
     id: "business",
     name: "Start a Business",
     icon: "💼",
+    group: "milestone",
     category: "business",
     impact: "neutral",
     description: "Business credit separation",
     scoreEffect: { initial: 0, longTerm: 0 },
     requirements: ["EIN number", "Business bank account"],
   },
+
+  // -------- Credit Actions (mechanics) --------
+  {
+    id: "pay-down-balance",
+    name: "Pay Down Card Balance",
+    icon: "⬇️",
+    group: "action",
+    category: "utilization",
+    impact: "positive",
+    description: "Reduce utilization before statement closes",
+    scoreEffect: { initial: +8, longTerm: +12 },
+    requirements: ["Some cash available"],
+  },
+  {
+    id: "limit-increase",
+    name: "Request Limit Increase",
+    icon: "📈",
+    group: "action",
+    category: "utilization",
+    impact: "mixed",
+    description: "Raises total limit (can lower utilization)",
+    scoreEffect: { initial: 0, longTerm: +8 },
+    requirements: ["Good standing", "Income verification sometimes"],
+  },
+  {
+    id: "miss-payment",
+    name: "Miss a Payment (30+ days)",
+    icon: "⚠️",
+    group: "action",
+    category: "payment-history",
+    impact: "negative",
+    description: "Late payment hits payment history hard",
+    scoreEffect: { initial: -35, longTerm: -60 },
+    requirements: ["Avoid this if possible"],
+  },
+  {
+    id: "dispute-error",
+    name: "Dispute Report Error",
+    icon: "🧾",
+    group: "action",
+    category: "report",
+    impact: "positive",
+    description: "Find & dispute an inaccurate item on your report",
+    scoreEffect: { initial: +0, longTerm: +10 },
+    requirements: ["Pull credit report", "Documentation helps"],
+  },
 ];
+
 
 export const scoreHistory = [
   { month: "Aug", score: 645 },

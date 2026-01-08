@@ -8,12 +8,14 @@ import CreditFactorGraph from '@/components/CreditFactorGraph';
 import FutureTimeline from '@/components/FutureTimeline';
 import SimulatorPanel from '@/components/SimulatorPanel';
 import FactorCards from '@/components/FactorCards';
+import { useUser } from '@/context/UserContext';
 import { userProfile } from '@/data/dummyData';
 
 export default function Home() {
   // Always use clarity mode (easy to understand) - no toggle needed
   const clarityMode = true;
   const [activeTab, setActiveTab] = useState('sandbox');
+  const { user } = useUser();
 
   return (
     <main className="min-h-screen bg-gray-50 font-sans">
@@ -35,7 +37,7 @@ export default function Home() {
               className="text-center mb-8"
             >
               <h1 className="text-4xl md:text-6xl font-black mb-4 text-clarity-blue tracking-tight">
-                Welcome back, {userProfile.name}
+                Welcome back, {user.name}
               </h1>
               <p className="text-gray-500 text-xl max-w-2xl mx-auto font-medium">
                 Banking reimagined for clarity.

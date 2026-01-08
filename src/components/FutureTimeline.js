@@ -2,22 +2,102 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { lifeEvents } from '@/data/dummyData';
-import { Calendar, Trash2, AlertCircle, CheckCircle, ArrowRight, Sparkles, Target } from 'lucide-react';
+import { Calendar, Trash2, AlertCircle, CheckCircle, ArrowRight, Sparkles, Target, User } from 'lucide-react';
+import { creditFactors } from '@/data/dummyData';
+import { useUser } from '@/context/UserContext';
+
+
+const AVAILABLE_MILESTONES = [
+  { id: 'apartment', name: 'Rent Apartment', icon: '🏠', description: 'Plan for your first place' },
+  { id: 'car-loan', name: 'Finance a Car', icon: '🚗', description: 'Plan for an auto loan' },
+  { id: 'house', name: 'Buy a House', icon: '🏡', description: 'Plan for a mortgage' },
+  { id: 'credit-card', name: 'Open First Credit Card', icon: '💳', description: 'Start building credit' },
+];
 
 export default function FutureTimeline({ clarityMode }) {
   const years = [2026, 2027, 2028, 2029, 2030];
   const [plannedEvents, setPlannedEvents] = useState([
-    { id: 1, eventId: 'credit-card', year: 2026, month: 'Mar' },
-    { id: 2, eventId: 'apartment', year: 2026, month: 'Jun' },
-    { id: 3, eventId: 'car-loan', year: 2027, month: 'Sep' },
-    { id: 4, eventId: 'house', year: 2029, month: 'Jan' },
+    { id: 1, eventId: 'apartment', year: 2026, month: 'Jun' },
+    { id: 2, eventId: 'car-loan', year: 2027, month: 'Sep' },
+    { id: 3, eventId: 'house', year: 2029, month: 'Jan' },
   ]);
   const [selectedYear, setSelectedYear] = useState(null);
   const [showEventPicker, setShowEventPicker] = useState(false);
   const [generatedRoadmap, setGeneratedRoadmap] = useState(false);
 
-  const getEventDetails = (eventId) => lifeEvents.find(e => e.id === eventId);
+  // --- PERSONALIZATION ENGINE ---
+  const { user } = useUser();
+  const currentScore = user.creditScore;
+  const utilFactor = creditFactors.find(f => f.id === 'utilization');
+
+  const utilization = utilFactor ? parseInt(utilFactor.value) : 0; // "42% used" -> 42
+
+  const getPersonalizedChecklist = (eventId) => {
+    switch(eventId) {
+      case 'apartment':
+        const isUtilReady = utilization < 30;
+        return {
+          title: "Rent Apartment",
+          readiness: isUtilReady && currentScore > 620 ? "Ready" : "Almost Ready",
+          readinessColor: isUtilReady && currentScore > 620 ? "text-green-600 bg-green-100" : "text-yellow-600 bg-yellow-100",
+          steps: [
+            { 
+              text: `Keep utilization < 30%`, 
+              status: isUtilReady ? "success" : "warning", 
+              detail: isUtilReady ? "Great job!" : `Currently ${utilization}% - needs work` 
+            },
+            { 
+              text: "Score > 620", 
+              status: currentScore > 620 ? "success" : "error", 
+              detail: `You have ${currentScore}` 
+            },
+            { text: "No missed payments", status: "success", detail: "Perfect history!" }
+          ]
+        };
+      case 'car-loan':
+        const isScoreReady = currentScore >= 660;
+        return {
+          title: "Finance a Car",
+          readiness: isScoreReady ? "Ready" : "Not Ready",
+          readinessColor: isScoreReady ? "text-green-600 bg-green-100" : "text-red-600 bg-red-100",
+          steps: [
+            { 
+              text: "Score 660+ for best rates", 
+              status: isScoreReady ? "success" : "error", 
+              detail: isScoreReady ? "You qualify for Tier 1" : `${660 - currentScore} pts to go` 
+            },
+            { text: "Save down payment (20%)", status: "todo", detail: "Connect savings account" },
+            { text: "Shop rates in 14-day window", status: "info", detail: "Protects your score" }
+          ]
+        };
+      case 'house':
+        return {
+          title: "Buy a House",
+          readiness: "Long Term Goal",
+          readinessColor: "text-blue-600 bg-blue-100",
+          steps: [
+            { text: "Score 740+ for best mortgage", status: currentScore >= 740 ? "success" : "warning", detail: `Currently ${currentScore}` },
+            { text: "DTI Ratio < 36%", status: "todo", detail: "Needs income verification" },
+            { text: "2+ years employment history", status: "success", detail: "Verified" }
+          ]
+        };
+      case 'credit-card':
+         return {
+          title: "Open First Credit Card",
+          readiness: "Ready",
+          readinessColor: "text-green-600 bg-green-100",
+          steps: [
+            { text: "Compare Annual Fees", status: "todo", detail: "Look for $0 fee cards" },
+            { text: "Check Pre-approval", status: "success", detail: "3 offers available" },
+            { text: "Understand APR", status: "info", detail: "Review education module" }
+          ]
+        };
+      default: return null;
+    }
+  };
+
+  const getEventName = (eventId) => AVAILABLE_MILESTONES.find(e => e.id === eventId)?.name || eventId;
+  const getEventIcon = (eventId) => AVAILABLE_MILESTONES.find(e => e.id === eventId)?.icon || '📅';
 
   const addEvent = (eventId, year) => {
     setPlannedEvents([...plannedEvents, { id: Date.now(), eventId, year, month: 'Jan' }]);
@@ -27,22 +107,13 @@ export default function FutureTimeline({ clarityMode }) {
 
   const removeEvent = (id) => setPlannedEvents(plannedEvents.filter(e => e.id !== id));
 
-  const getProjectedScore = (year) => {
-    let scoreChange = 0;
-    plannedEvents.filter(e => e.year <= year).forEach(pe => {
-      const event = getEventDetails(pe.eventId);
-      if (event) scoreChange += event.scoreEffect.longTerm;
-    });
-    return Math.min(850, Math.max(300, 682 + scoreChange));
-  };
-
   return (
     <div className="space-y-6">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">🗓️ Your Future Timeline</h2>
-            <p className="text-gray-500">{clarityMode ? "Drag life events onto the timeline to see exactly what you need to do!" : "Plan major financial milestones and receive a reverse-engineered action roadmap"}</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">🗓️ {user.name}&apos;s Future Timeline</h2>
+            <p className="text-gray-500">{clarityMode ? "Drag life events onto the timeline to see exactly what you need to do!" : "Select your milestones to generate a personalized readiness checklist"}</p>
           </div>
           <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => setGeneratedRoadmap(true)}
             className="px-6 py-3 bg-clarity-blue rounded-xl text-white font-medium flex items-center gap-2 shadow-lg shadow-blue-900/20">
@@ -54,7 +125,6 @@ export default function FutureTimeline({ clarityMode }) {
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-white rounded-2xl border border-gray-200 p-6 overflow-x-auto shadow-sm">
         <div className="flex items-center gap-4 mb-8 min-w-[800px]">
           {years.map((year, index) => {
-            const projectedScore = getProjectedScore(year);
             const yearEvents = plannedEvents.filter(e => e.year === year);
             return (
               <motion.div key={year} initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }} className="flex-1">
@@ -62,9 +132,17 @@ export default function FutureTimeline({ clarityMode }) {
                   onClick={() => { setSelectedYear(year); setShowEventPicker(true); }}>
                   <div className="text-2xl font-bold text-gray-900 mb-1">{year}</div>
                   <div className="text-xs text-gray-500 mb-2">{year === 2026 ? 'Current Year' : `+${year - 2026} years`}</div>
-                  <div className={`text-lg font-semibold ${projectedScore >= 740 ? 'text-green-400' : projectedScore >= 700 ? 'text-blue-400' : 'text-yellow-400'}`}>{projectedScore}</div>
-                  <div className="text-xs text-gray-500">projected</div>
-                  {yearEvents.length > 0 && <div className="mt-2 inline-flex items-center gap-1 px-2 py-1 bg-blue-100 rounded-full"><span className="text-xs text-clarity-blue">{yearEvents.length} event{yearEvents.length > 1 ? 's' : ''}</span></div>}
+                  
+                  {/* Replaced Score with Event Count or Empty State */}
+                  <div className="h-8 flex items-center justify-center"> 
+                      {yearEvents.length > 0 ? (
+                          <div className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 rounded-full">
+                           <span className="text-sm font-semibold text-clarity-blue">{yearEvents.length} Milestone{yearEvents.length > 1 ? 's' : ''}</span>
+                          </div>
+                      ) : (
+                          <span className="text-sm text-gray-400">Add Goal +</span>
+                      )}
+                  </div>
                 </div>
               </motion.div>
             );
@@ -84,25 +162,22 @@ export default function FutureTimeline({ clarityMode }) {
         </div>
 
         <div className="mt-8 space-y-3 min-w-[800px]">
-          <h4 className="text-sm font-medium text-gray-400 mb-4">Planned Events</h4>
+          <h4 className="text-sm font-medium text-gray-400 mb-4">Planned Milestones</h4>
           <AnimatePresence>
-            {plannedEvents.map((pe, index) => {
-              const event = getEventDetails(pe.eventId);
-              if (!event) return null;
+            {plannedEvents.sort((a,b) => a.year - b.year).map((pe, index) => {
+              const eventDefined = AVAILABLE_MILESTONES.find(e => e.id === pe.eventId);
+              if (!eventDefined) return null;
               return (
                 <motion.div key={pe.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}
                   className="flex items-center gap-4 bg-gray-50 rounded-xl p-4 group border border-gray-100">
-                  <div className="text-3xl">{event.icon}</div>
+                  <div className="text-3xl">{eventDefined.icon}</div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-gray-900">{event.name}</span>
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-clarity-blue">{pe.month} {pe.year}</span>
+                       {/* PERSONALIZED: Check if this year matches user desire */}
+                      <span className="font-medium text-gray-900">{eventDefined.name}</span>
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-clarity-blue">{pe.year}</span>
                     </div>
-                    <p className="text-sm text-gray-500">{event.description}</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-sm"><span className="text-red-400">{event.scoreEffect.initial}</span><ArrowRight className="w-3 h-3 inline mx-1 text-gray-600" /><span className="text-green-400">+{event.scoreEffect.longTerm}</span></div>
-                    <p className="text-xs text-gray-500">score impact</p>
+                    <p className="text-sm text-gray-500">{eventDefined.description}</p>
                   </div>
                   <button onClick={() => removeEvent(pe.id)} className="p-2 rounded-lg hover:bg-red-50 text-gray-500 hover:text-red-500 opacity-0 group-hover:opacity-100"><Trash2 className="w-4 h-4" /></button>
                 </motion.div>
@@ -117,11 +192,11 @@ export default function FutureTimeline({ clarityMode }) {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => { setShowEventPicker(false); setSelectedYear(null); }}>
             <motion.div initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }} className="bg-white rounded-2xl border border-gray-200 p-6 max-w-2xl w-full shadow-xl" onClick={(e) => e.stopPropagation()}>
               <div className="flex items-center justify-between mb-6">
-                <div><h3 className="text-xl font-bold text-gray-900">Add Event to {selectedYear}</h3><p className="text-sm text-gray-500">Choose a life event to plan for</p></div>
+                <div><h3 className="text-xl font-bold text-gray-900">Add Milestone to {selectedYear}</h3><p className="text-sm text-gray-500">Choose a financial goal to plan for</p></div>
                 <button onClick={() => { setShowEventPicker(false); setSelectedYear(null); }} className="p-2 rounded-lg hover:bg-gray-100 text-gray-500">✕</button>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                {lifeEvents.map((event) => (
+                {AVAILABLE_MILESTONES.map((event) => (
                   <motion.button key={event.id} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => addEvent(event.id, selectedYear)}
                     className="bg-gray-50 rounded-xl p-4 text-left hover:border-blue-500/50 border border-gray-200 transition-all hover:bg-blue-50">
                     <div className="flex items-start gap-3">
@@ -129,11 +204,6 @@ export default function FutureTimeline({ clarityMode }) {
                       <div className="flex-1">
                         <h4 className="font-medium text-gray-900">{event.name}</h4>
                         <p className="text-xs text-gray-500 mb-2">{event.description}</p>
-                        <div className="flex items-center gap-2 text-xs">
-                          <span className="text-red-500">{event.scoreEffect.initial} initial</span>
-                          <span className="text-gray-400">→</span>
-                          <span className="text-green-600">+{event.scoreEffect.longTerm} long-term</span>
-                        </div>
                       </div>
                     </div>
                   </motion.button>
@@ -148,37 +218,64 @@ export default function FutureTimeline({ clarityMode }) {
         {generatedRoadmap && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-200 p-6">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center"><Target className="w-6 h-6 text-clarity-blue" /></div>
-              <div><h3 className="text-xl font-bold text-gray-900">Your Personalized Roadmap</h3><p className="text-sm text-gray-500">{clarityMode ? "Here's exactly what you need to do, step by step!" : "Reverse-engineered action plan based on your timeline goals"}</p></div>
+              <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center"><User className="w-6 h-6 text-clarity-blue" /></div>
+              <div><h3 className="text-xl font-bold text-gray-900">Roadmap for {user.name}</h3><p className="text-sm text-gray-500">Personalized requirements based on your credit profile</p></div>
             </div>
-            <div className="space-y-4">
-              {[
-                { time: "Now - March 2026", action: "Pay down credit card balance to under 30%", why: clarityMode ? "This is the fastest way to boost your score!" : "Reduces utilization ratio, expected +25 point impact", priority: "high" },
-                { time: "March 2026", action: "Open a new secured credit card", why: clarityMode ? "This adds to your 'credit mix'" : "Increases available credit and diversifies credit mix", priority: "medium" },
-                { time: "April - May 2026", action: "Set up autopay on all accounts", why: clarityMode ? "Never miss a payment again!" : "Protects 35% of score calculation", priority: "high" },
-                { time: "June 2026", action: "Apply for apartment - you should hit 700!", why: clarityMode ? "With 700+, you'll get approved easier" : "700+ score significantly improves rental success rate", priority: "milestone" },
-                { time: "2027 - No new credit", action: "Let your accounts age", why: clarityMode ? "Banks trust older accounts more!" : "12-month inquiry-free period before auto loan", priority: "warning" },
-                { time: "September 2027", action: "Apply for auto loan with 720+ score", why: clarityMode ? "At 720+, you'll get the best rates!" : "720+ qualifies for tier-1 rates, saving $2,000-5,000", priority: "milestone" },
-              ].map((step, index) => (
-                <motion.div key={index} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.1 }}
-                  className={`flex items-start gap-4 p-4 rounded-xl ${step.priority === 'high' ? 'bg-red-50 border border-red-200' : step.priority === 'milestone' ? 'bg-green-50 border border-green-200' : step.priority === 'warning' ? 'bg-yellow-50 border border-yellow-200' : 'bg-white border border-gray-200'}`}>
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${step.priority === 'high' ? 'bg-red-100 text-red-600' : step.priority === 'milestone' ? 'bg-green-100 text-green-600' : step.priority === 'warning' ? 'bg-yellow-100 text-yellow-600' : 'bg-blue-100 text-clarity-blue'}`}>
-                    {step.priority === 'milestone' ? <CheckCircle className="w-4 h-4" /> : step.priority === 'warning' ? <AlertCircle className="w-4 h-4" /> : <span className="text-sm font-bold">{index + 1}</span>}
-                  </div>
-                  <div className="flex-1">
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600">{step.time}</span>
-                    <h4 className="font-medium text-gray-900 mt-1 mb-1">{step.action}</h4>
-                    <p className="text-sm text-gray-600">{step.why}</p>
-                  </div>
-                </motion.div>
-              ))}
+            
+            <div className="space-y-6">
+              {plannedEvents.sort((a,b) => a.year - b.year).map((pe, index) => {
+                  const checklist = getPersonalizedChecklist(pe.eventId);
+                  if (!checklist) return null;
+
+                  return (
+                    <motion.div key={pe.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.1 }}
+                      className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                        
+                        <div className="flex items-center justify-between mb-4">
+                           <div className="flex items-center gap-2">
+                                <span className="text-2xl">{getEventIcon(pe.eventId)}</span>
+                                <div>
+                                    <h4 className="font-bold text-gray-900">{checklist.title}</h4>
+                                    <span className="text-xs text-gray-500">Target: {pe.year}</span>
+                                </div>
+                           </div>
+                           <div className={`px-3 py-1 rounded-full text-xs font-bold ${checklist.readinessColor}`}>
+                               {checklist.readiness}
+                           </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            {checklist.steps.map((step, sIdx) => (
+                                <div key={sIdx} className="flex items-center gap-3">
+                                    {/* Dynamic Icon based on status */}
+                                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
+                                        step.status === 'success' ? 'border-green-500 bg-green-50 text-green-600' :
+                                        step.status === 'warning' ? 'border-yellow-500 bg-yellow-50 text-yellow-600' :
+                                        step.status === 'error' ? 'border-red-500 bg-red-50 text-red-600' :
+                                        'border-gray-300 bg-gray-50 text-gray-400'
+                                    }`}>
+                                        {step.status === 'success' ? <CheckCircle className="w-3 h-3" /> :
+                                         step.status === 'warning' || step.status === 'error' ? <AlertCircle className="w-3 h-3" /> :
+                                         <div className="w-2.5 h-2.5 rounded-full bg-gray-200"></div>}
+                                    </div>
+                                    <div className="flex-1">
+                                        <p className="text-sm font-medium text-gray-900">{step.text}</p>
+                                        <p className={`text-xs ${
+                                            step.status === 'success' ? 'text-green-600' :
+                                            step.status === 'warning' ? 'text-yellow-600' :
+                                            step.status === 'error' ? 'text-red-600' :
+                                            'text-gray-500'
+                                        }`}>{step.detail}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                    </motion.div>
+                  )
+              })}
             </div>
-            <div className="mt-6 p-4 bg-white rounded-xl border border-gray-200">
-              <div className="flex items-center justify-between">
-                <div><p className="text-sm text-gray-500">Following this roadmap, your projected score by 2029:</p><p className="text-3xl font-bold text-green-600">752</p></div>
-                <div className="text-right"><p className="text-sm text-gray-500">Potential savings on home mortgage:</p><p className="text-2xl font-bold text-clarity-blue">$47,000+</p><p className="text-xs text-gray-500">over 30-year term</p></div>
-              </div>
-            </div>
+
           </motion.div>
         )}
       </AnimatePresence>

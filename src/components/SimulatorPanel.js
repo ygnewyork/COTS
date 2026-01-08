@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { simulationScenarios, userProfile } from '@/data/dummyData';
+import { simulationScenarios } from '@/data/dummyData';
 import { 
   Sliders, 
   TrendingUp, 
@@ -15,13 +15,16 @@ import {
   ChevronDown,
   Info
 } from 'lucide-react';
+import { useUser } from '@/context/UserContext';
 
 export default function SimulatorPanel({ clarityMode }) {
+  // Client-side state
+  const { user } = useUser();
   const [utilization, setUtilization] = useState(42);
-  const [onTimePayments, setOnTimePayments] = useState(95);
+  const [onTimePayments, setOnTimePayments] = useState(100);
   const [newAccounts, setNewAccounts] = useState(1);
   const [creditLimit, setCreditLimit] = useState(10000);
-  const [simulatedScore, setSimulatedScore] = useState(userProfile.creditScore);
+  const [simulatedScore, setSimulatedScore] = useState(user ? user.creditScore : 682);
   const [isSimulating, setIsSimulating] = useState(false);
   const [showResults, setShowResults] = useState(false);
 
@@ -30,7 +33,7 @@ export default function SimulatorPanel({ clarityMode }) {
     
     // Simulate calculation delay
     setTimeout(() => {
-      let newScore = 682; // base score
+      let newScore = user ? user.creditScore : 682; // base score
       
       // Utilization impact (30% weight)
       if (utilization <= 10) newScore += 30;
@@ -62,11 +65,12 @@ export default function SimulatorPanel({ clarityMode }) {
     setOnTimePayments(95);
     setNewAccounts(1);
     setCreditLimit(10000);
-    setSimulatedScore(userProfile.creditScore);
+    setSimulatedScore(user ? user.creditScore : 682);
     setShowResults(false);
+    setStressResult(null);
   };
 
-  const scoreDiff = simulatedScore - userProfile.creditScore;
+  const scoreDiff = simulatedScore - (user ? user.creditScore : 682);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -74,7 +78,7 @@ export default function SimulatorPanel({ clarityMode }) {
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
-        className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm"
+        className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm flex flex-col h-full"
       >
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
@@ -241,7 +245,7 @@ export default function SimulatorPanel({ clarityMode }) {
             {/* Current Score */}
             <div className="text-center">
               <p className="text-xs text-gray-500 mb-2">Current</p>
-              <div className="text-4xl font-bold text-gray-900">{userProfile.creditScore}</div>
+              <div className="text-4xl font-bold text-gray-900">{user.creditScore}</div>
             </div>
 
             {/* Arrow */}
@@ -364,6 +368,8 @@ export default function SimulatorPanel({ clarityMode }) {
             </motion.div>
           )}
         </AnimatePresence>
+
+
       </motion.div>
 
       {/* Custom slider styles */}

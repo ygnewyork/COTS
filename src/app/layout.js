@@ -1,4 +1,5 @@
-import './globals.css'
+import { UserProvider } from '@/context/UserContext';
+import './globals.css';
 
 export const metadata = {
   title: 'ClarityCapital - Master Your Credit Score',
@@ -9,7 +10,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="bg-clarity-dark min-h-screen antialiased">
-        {children}
+        <UserProvider>
+          {children}
+        </UserProvider>
       </body>
     </html>
   )
