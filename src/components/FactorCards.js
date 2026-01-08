@@ -4,9 +4,50 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { creditFactors } from '@/data/dummyData';
 import { TrendingUp, TrendingDown, Minus, ChevronDown, ChevronUp, X } from 'lucide-react';
+import { useUser } from '@/context/UserContext';
 
 export default function FactorCards({ clarityMode }) {
+  const { user } = useUser();
   const [expandedCard, setExpandedCard] = useState(null);
+
+  // Helper to map user data to factor cards
+  const getDynamicFactors = () => {
+    if (!user || !user.initialStats) return creditFactors;
+
+    const stats = user.initialStats;
+    
+    return creditFactors.map(factor => {
+      let newValue = factor.value;
+      let newScore = factor.score;
+      
+      // Override specific fields based on user data
+      switch(factor.id) {
+        case 'payment-history':
+          newValue = `${stats.paymentsOnTime} on-time / ${stats.paymentsTotal} total`;
+          // Simple calc: ratio * 100 roughly
+          newScore = Math.round((stats.paymentsOnTime / stats.paymentsTotal) * 100); 
+          break;
+        case 'utilization':
+          newValue = `${stats.utilization}% used`;
+          // Inverse score: lower is better. 100 - util roughly
+          newScore = Math.max(0, 100 - stats.utilization);
+          break;
+        case 'credit-age':
+          newValue = `${stats.creditAge} years avg`;
+          break;
+        case 'credit-mix':
+          newValue = `${stats.accountCount} types`;
+          break;
+        case 'new-credit':
+          newValue = `${stats.inquiries} inquiry`;
+          break;
+      }
+      
+      return { ...factor, value: newValue, score: newScore };
+    });
+  };
+
+  const dynamicFactors = getDynamicFactors();
 
   const getStatusIcon = (status) => {
     switch (status) {
@@ -40,7 +81,7 @@ export default function FactorCards({ clarityMode }) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-        {creditFactors.map((factor, index) => {
+        {dynamicFactors.map((factor, index) => {
           const isExpanded = expandedCard === factor.id;
           
           return (

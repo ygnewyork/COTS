@@ -2,10 +2,12 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { creditFactors, userProfile } from '@/data/dummyData';
+import { creditFactors } from '@/data/dummyData';
 import { Info, X } from 'lucide-react';
+import { useUser } from '@/context/UserContext';
 
 export default function CreditFactorGraph({ clarityMode }) {
+  const { user } = useUser();
   const containerRef = useRef(null);
   const [dimensions, setDimensions] = useState({ width: 600, height: 500 });
   const [hoveredFactor, setHoveredFactor] = useState(null);
@@ -164,11 +166,12 @@ export default function CreditFactorGraph({ clarityMode }) {
             fill="#004977" 
             fontSize={32} 
             fontWeight="bold" 
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
+            key={user.creditScore} // re-animate on change
+            initial={{ opacity: 0, scale: 0.5 }} 
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.3, type: "spring" }}
           >
-            {userProfile.creditScore}
+            {user.creditScore}
           </motion.text>
           <motion.text 
             x={centerX} y={centerY + 18} 
