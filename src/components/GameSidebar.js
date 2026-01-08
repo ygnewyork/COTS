@@ -65,23 +65,23 @@ export default function GameSidebar({ state, config = [] }) {
     // OR just append it if not present. For now, strictly follow array.
 
     return (
-        <aside className="w-full md:w-64 bg-clarity-card border-r border-clarity-border/50 p-6 flex flex-col gap-4 overflow-y-auto h-full">
+        <aside className="w-full md:w-64 bg-white border-r border-gray-200 p-6 flex flex-col gap-4 overflow-y-auto h-full shadow-sm">
             <div className="mb-4">
-                <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-2">
+                <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">
                     My Finances
                 </h2>
-                <div className="bg-clarity-dark p-4 rounded-xl border border-clarity-border">
+                <div className="bg-green-50 p-4 rounded-xl border border-green-200">
                     <div className="flex items-center gap-3 mb-1">
-                        <Wallet className="w-5 h-5 text-green-400" />
-                        <span className="text-gray-300 font-medium">Cash</span>
+                        <Wallet className="w-5 h-5 text-green-600" />
+                        <span className="text-gray-700 font-medium">Cash</span>
                     </div>
-                    <p className="text-2xl font-bold text-white">
+                    <p className="text-2xl font-bold text-green-700">
                         ${state.cash.toLocaleString()}
                     </p>
                 </div>
             </div>
 
-            <h2 className="text-sm font-bold text-gray-400 uppercase tracking-wider">
+            <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wider">
                 Credit Profile
             </h2>
             <div className="flex flex-col gap-3">
@@ -95,17 +95,17 @@ export default function GameSidebar({ state, config = [] }) {
                         <motion.div
                             key={key}
                             layout
-                            className="p-3 rounded-xl bg-clarity-dark/50 border border-clarity-border hover:border-clarity-blue/30 transition-colors"
+                            className="p-3 rounded-xl bg-gray-50 border border-gray-200 hover:border-clarity-blue/50 transition-colors"
                         >
                             <div className="flex items-center gap-3">
-                                <div className="p-2 rounded-lg bg-clarity-card">
+                                <div className="p-2 rounded-lg bg-blue-50">
                                     <Icon className="w-4 h-4 text-clarity-blue" />
                                 </div>
                                 <div>
-                                    <p className="text-xs text-gray-400">
+                                    <p className="text-xs text-gray-500">
                                         {label}
                                     </p>
-                                    <p className="text-lg font-bold text-white leading-none mt-1">
+                                    <p className="text-lg font-bold text-gray-900 leading-none mt-1">
                                         {formatted}
                                     </p>
                                 </div>

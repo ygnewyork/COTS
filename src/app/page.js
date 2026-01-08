@@ -7,14 +7,12 @@ import ScoreOverview from '@/components/ScoreOverview';
 import CreditFactorGraph from '@/components/CreditFactorGraph';
 import FutureTimeline from '@/components/FutureTimeline';
 import SimulatorPanel from '@/components/SimulatorPanel';
-import ClarityModeToggle from '@/components/ClarityModeToggle';
 import FactorCards from '@/components/FactorCards';
-import LearnCenter from '@/components/LearnCenter';
-import CreditGame from '@/components/CreditGame';
 import { userProfile } from '@/data/dummyData';
 
 export default function Home() {
-  const [clarityMode, setClarityMode] = useState(false);
+  // Always use clarity mode (easy to understand) - no toggle needed
+  const clarityMode = true;
   const [activeTab, setActiveTab] = useState('sandbox');
 
   return (
@@ -44,18 +42,11 @@ export default function Home() {
               </p>
             </motion.div>
 
-            <div className="flex justify-center mb-8">
-              <ClarityModeToggle 
-                enabled={clarityMode} 
-                onToggle={() => setClarityMode(!clarityMode)} 
-              />
-            </div>
-
             <div className="flex justify-center flex-wrap gap-2 mb-8">
-              {['sandbox', 'timeline', 'simulator', 'game'].map((tab) => (
+              {['sandbox', 'timeline', 'simulator'].map((tab) => (
                 <button
                   key={tab}
-                  onClick={() => setActiveTab(tab)} // Removed Learn Tab
+                  onClick={() => setActiveTab(tab)}
                   className={`px-6 py-3 rounded-xl font-bold transition-all ${
                     activeTab === tab
                       ? 'bg-clarity-blue text-white shadow-lg shadow-blue-900/10'
@@ -65,7 +56,6 @@ export default function Home() {
                   {tab === 'sandbox' && 'Overview'}
                   {tab === 'timeline' && 'Timeline'}
                   {tab === 'simulator' && 'Simulator'}
-                  {tab === 'game' && 'Credit Game'}
                 </button>
               ))}
             </div>
@@ -112,12 +102,10 @@ export default function Home() {
                 <SimulatorPanel clarityMode={clarityMode} />
               </motion.div>
             )}
-
-            {activeTab === 'game' && <CreditGame />}
           </div>
         </section>
 
-        <footer className="border-t border-clarity-border py-8 px-6">
+        <footer className="border-t border-gray-200 py-8 px-6 bg-white">
           <div className="max-w-7xl mx-auto text-center text-gray-500 text-sm">
             <p>ClarityCapital • Teaching you the game, not just the score</p>
             <p className="mt-2 text-xs">Demo Version • Data is simulated for demonstration</p>

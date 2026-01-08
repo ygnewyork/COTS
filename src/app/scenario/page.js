@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 
 export default function ScenarioPage() {
     return (
-        <main className="min-h-screen bg-clarity-dark animated-bg">
+        <main className="min-h-screen bg-gray-50">
             <Navbar />
             <div className="pt-20 h-screen overflow-hidden">
                 <ScenarioGame />

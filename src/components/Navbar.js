@@ -1,64 +1,73 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Menu, Bell, User, Sparkles } from "lucide-react";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { Bell, User } from "lucide-react";
 
 export default function Navbar() {
+    const pathname = usePathname();
+    const isDashboard = pathname === "/";
+    const isScenario = pathname === "/scenario";
+    const isLearn = pathname === "/learn";
+
     return (
         <motion.nav
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className="fixed top-0 left-0 right-0 z-50 glass border-b border-clarity-border"
+            className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm"
         >
             <div className="max-w-7xl mx-auto px-6 py-4">
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-cyan-500 flex items-center justify-center">
-                            <Sparkles className="w-6 h-6 text-white" />
+                    <Link href="/" className="flex items-center gap-3">
+                        <img src="/mascot.png" alt="Clarity Capital Mascot" className="w-10 h-10 object-contain" />
+                        <div className="flex items-center">
+                            <span className="text-2xl font-black text-clarity-blue tracking-tight">Clarity</span>
+                            <span className="text-2xl font-black text-clarity-red tracking-tight">Capital</span>
                         </div>
-                        <div>
-                            <h1 className="text-xl font-bold text-white">
-                                Clarity
-                                <span className="text-purple-400">Capital</span>
-                            </h1>
-                            <p className="text-xs text-gray-500">
-                                Credit Sandbox
-                            </p>
-                        </div>
-                    </div>
-                    <div className="hidden md:flex items-center gap-8">
-                        <a href="#" className="text-white font-medium">
+                    </Link>
+                    <div className="hidden md:flex items-center gap-1">
+                        <Link 
+                            href="/"
+                            className={`px-5 py-2 rounded-lg font-semibold transition-all ${
+                                isDashboard 
+                                    ? 'bg-clarity-blue text-white' 
+                                    : 'text-gray-600 hover:bg-gray-100 hover:text-clarity-blue'
+                            }`}
+                        >
                             Dashboard
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                             href="/scenario"
-                            className="text-gray-400 hover:text-white transition-colors"
+                            className={`px-5 py-2 rounded-lg font-semibold transition-all ${
+                                isScenario 
+                                    ? 'bg-clarity-blue text-white' 
+                                    : 'text-gray-600 hover:bg-gray-100 hover:text-clarity-blue'
+                            }`}
                         >
                             Scenario Game
-                        </a>
-                        <a
-                            href="#"
-                            className="text-gray-400 hover:text-white transition-colors"
+                        </Link>
+                        <Link
+                            href="/learn"
+                            className={`px-5 py-2 rounded-lg font-semibold transition-all ${
+                                isLearn 
+                                    ? 'bg-clarity-blue text-white' 
+                                    : 'text-gray-600 hover:bg-gray-100 hover:text-clarity-blue'
+                            }`}
                         >
                             Learn
-                        </a>
-                        <a
-                            href="#"
-                            className="text-gray-400 hover:text-white transition-colors"
-                        >
-                            Goals
-                        </a>
+                        </Link>
                     </div>
                     <div className="flex items-center gap-4">
-                        <button className="relative p-2 rounded-lg hover:bg-clarity-card transition-colors">
-                            <Bell className="w-5 h-5 text-gray-400" />
-                            <span className="absolute top-1 right-1 w-2 h-2 bg-purple-500 rounded-full" />
+                        <button className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                            <Bell className="w-5 h-5 text-gray-500" />
+                            <span className="absolute top-1 right-1 w-2 h-2 bg-clarity-red rounded-full" />
                         </button>
-                        <button className="flex items-center gap-2 p-2 pr-4 rounded-xl bg-clarity-card hover:bg-clarity-border transition-colors">
-                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center">
+                        <button className="flex items-center gap-2 p-2 pr-4 rounded-xl bg-gray-100 hover:bg-gray-200 transition-colors">
+                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-clarity-blue to-blue-400 flex items-center justify-center">
                                 <User className="w-4 h-4 text-white" />
                             </div>
-                            <span className="text-sm font-medium text-white hidden sm:block">
+                            <span className="text-sm font-medium text-gray-700 hidden sm:block">
                                 Jordan
                             </span>
                         </button>
