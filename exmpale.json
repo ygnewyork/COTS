@@ -1,0 +1,554 @@
+{
+  "meta": {
+    "gameId": "credit-life-choices",
+    "version": "1.0.0",
+    "scoreRange": { "min": 300, "max": 850 },
+    "disclaimer": "This is a simplified educational model. Real credit scores are proprietary and can vary by bureau and scoring model."
+  },
+  "initialState": {
+    "score": 600,
+    "cash": 1000,
+    "cc": {
+      "balance": 0,
+      "limit": 0
+    },
+    "installmentLoan": {
+      "balance": 0,
+      "monthlyPayment": 0
+    },
+    "stats": {
+      "accounts": 0,
+      "hardInquiries12m": 0,
+      "latePayments": 0,
+      "onTimeStreak": 0,
+      "avgAccountAgeMonths": 0,
+      "stress": 0,
+      "riskFlags": []
+    }
+  },
+  "derivedFields": [
+    {
+      "id": "utilizationPct",
+      "label": "Utilization %",
+      "formula": "cc.limit > 0 ? (cc.balance / cc.limit) * 100 : 0"
+    }
+  ],
+  "ui": {
+    "sidebar": [
+      "score",
+      "cc.balance",
+      "cc.limit",
+      "utilizationPct",
+      "stats.onTimeStreak",
+      "stats.latePayments",
+      "stats.hardInquiries12m",
+      "stats.avgAccountAgeMonths",
+      "installmentLoan.balance"
+    ]
+  },
+  "scenarios": [
+    {
+      "id": "Q1_start_building",
+      "title": "Start Building Credit",
+      "prompt": "You just turned 18. How do you start building credit?",
+      "options": [
+        {
+          "id": "Q1_A_auth_user",
+          "label": "A",
+          "text": "Become an authorized user on a parent/guardian’s card.",
+          "teach": "Piggybacking on a well-managed account can help establish credit history.",
+          "effects": [
+            { "op": "add", "path": "stats.accounts", "value": 1 },
+            { "op": "add", "path": "stats.avgAccountAgeMonths", "value": 6 },
+            { "op": "add", "path": "score", "value": 10 },
+            { "op": "set", "path": "cc.limit", "value": 500 }
+          ],
+          "next": "Q2_spend_level"
+        },
+        {
+          "id": "Q1_B_secured_card",
+          "label": "B",
+          "text": "Open a secured credit card ($200 deposit).",
+          "teach": "Secured cards are common starter products that help build payment history.",
+          "effects": [
+            { "op": "add", "path": "stats.accounts", "value": 1 },
+            { "op": "add", "path": "cash", "value": -200 },
+            { "op": "set", "path": "cc.limit", "value": 300 },
+            { "op": "add", "path": "score", "value": 5 }
+          ],
+          "next": "Q2_spend_level"
+        },
+        {
+          "id": "Q1_C_cash_only",
+          "label": "C",
+          "text": "Do nothing (cash only).",
+          "teach": "Without credit activity, you may have little/no credit history when you need it.",
+          "effects": [
+            { "op": "add", "path": "stats.riskFlags", "value": "NO_CREDIT_HISTORY" }
+          ],
+          "next": "Q2_spend_level"
+        }
+      ]
+    },
+    {
+      "id": "Q2_spend_level",
+      "title": "First Month Spending",
+      "prompt": "First month with a card: how much do you spend?",
+      "options": [
+        {
+          "id": "Q2_A_10pct",
+          "label": "A",
+          "text": "About 10% of your limit.",
+          "teach": "Lower utilization is generally better for your score.",
+          "effects": [
+            {
+              "op": "setByFormula",
+              "path": "cc.balance",
+              "formula": "cc.limit * 0.10"
+            },
+            { "op": "add", "path": "score", "value": 5 }
+          ],
+          "next": "Q3_payment_choice"
+        },
+        {
+          "id": "Q2_B_60pct",
+          "label": "B",
+          "text": "About 60% of your limit.",
+          "teach": "High utilization can hurt your score even if you pay on time.",
+          "effects": [
+            {
+              "op": "setByFormula",
+              "path": "cc.balance",
+              "formula": "cc.limit * 0.60"
+            },
+            { "op": "add", "path": "score", "value": -8 }
+          ],
+          "next": "Q3_payment_choice"
+        },
+        {
+          "id": "Q2_C_95pct",
+          "label": "C",
+          "text": "About 95% of your limit.",
+          "teach": "Maxing out cards spikes utilization and is typically very negative for scores.",
+          "effects": [
+            {
+              "op": "setByFormula",
+              "path": "cc.balance",
+              "formula": "cc.limit * 0.95"
+            },
+            { "op": "add", "path": "score", "value": -15 }
+          ],
+          "next": "Q3_payment_choice"
+        }
+      ]
+    },
+    {
+      "id": "Q3_payment_choice",
+      "title": "Payment Decision",
+      "prompt": "Your statement due tomorrow. What do you pay?",
+      "options": [
+        {
+          "id": "Q3_A_pay_full",
+          "label": "A",
+          "text": "Pay in full on time.",
+          "teach": "On-time payments are the #1 driver; paying in full also keeps utilization low.",
+          "effects": [
+            { "op": "set", "path": "cc.balance", "value": 0 },
+            { "op": "add", "path": "stats.onTimeStreak", "value": 1 },
+            { "op": "add", "path": "score", "value": 12 }
+          ],
+          "next": "Q4_store_card_offer"
+        },
+        {
+          "id": "Q3_B_pay_min",
+          "label": "B",
+          "text": "Pay minimum on time.",
+          "teach": "On-time helps, but carrying a balance can keep utilization higher and cost interest.",
+          "effects": [
+            { "op": "mul", "path": "cc.balance", "value": 0.9 },
+            { "op": "add", "path": "stats.onTimeStreak", "value": 1 },
+            { "op": "add", "path": "score", "value": 4 }
+          ],
+          "next": "Q4_store_card_offer"
+        },
+        {
+          "id": "Q3_C_pay_late",
+          "label": "C",
+          "text": "Pay late (30+ days).",
+          "teach": "Late payments can cause major score drops and stay on reports for years.",
+          "effects": [
+            { "op": "add", "path": "stats.latePayments", "value": 1 },
+            { "op": "set", "path": "stats.onTimeStreak", "value": 0 },
+            { "op": "add", "path": "score", "value": -30 },
+            { "op": "add", "path": "stats.riskFlags", "value": "HIGH_RISK_LATE_PAYMENT" }
+          ],
+          "next": "Q4_store_card_offer"
+        }
+      ]
+    },
+    {
+      "id": "Q4_store_card_offer",
+      "title": "Store Card Temptation",
+      "prompt": "At checkout: “Open a store card and get 15% off today?”",
+      "options": [
+        {
+          "id": "Q4_A_open_store_card",
+          "label": "A",
+          "text": "Yes, open it.",
+          "teach": "New accounts add a hard inquiry and lower average age short-term.",
+          "effects": [
+            { "op": "add", "path": "stats.accounts", "value": 1 },
+            { "op": "add", "path": "stats.hardInquiries12m", "value": 1 },
+            { "op": "add", "path": "cc.limit", "value": 500 },
+            { "op": "add", "path": "stats.avgAccountAgeMonths", "value": -2 },
+            { "op": "add", "path": "score", "value": -8 }
+          ],
+          "next": "Q5_fix_utilization"
+        },
+        {
+          "id": "Q4_B_skip",
+          "label": "B",
+          "text": "No, skip.",
+          "teach": "Avoiding unnecessary applications helps keep inquiries low and account age stable.",
+          "effects": [
+            { "op": "add", "path": "score", "value": 1 }
+          ],
+          "next": "Q5_fix_utilization"
+        },
+        {
+          "id": "Q4_C_one_time_promo",
+          "label": "C",
+          "text": "Ask for a one-time promo without opening credit.",
+          "teach": "You can often seek discounts without triggering a hard inquiry.",
+          "effects": [
+            { "op": "add", "path": "cash", "value": 20 },
+            { "op": "add", "path": "score", "value": 2 }
+          ],
+          "next": "Q5_fix_utilization"
+        }
+      ]
+    },
+    {
+      "id": "Q5_fix_utilization",
+      "title": "Fix Your Utilization",
+      "prompt": "Your utilization is high. How do you fix it?",
+      "options": [
+        {
+          "id": "Q5_A_pay_down",
+          "label": "A",
+          "text": "Pay down the balance aggressively.",
+          "teach": "Paying balances down directly reduces utilization and usually helps quickly.",
+          "effects": [
+            {
+              "op": "setByFormula",
+              "path": "cash",
+              "formula": "cash - Math.min(300, cc.balance)"
+            },
+            {
+              "op": "setByFormula",
+              "path": "cc.balance",
+              "formula": "cc.balance - Math.min(300, cc.balance)"
+            },
+            { "op": "add", "path": "score", "value": 10 }
+          ],
+          "next": "Q6_car_decision"
+        },
+        {
+          "id": "Q5_B_limit_increase",
+          "label": "B",
+          "text": "Request a credit limit increase.",
+          "teach": "A higher limit can reduce utilization (if spending stays the same).",
+          "effects": [
+            { "op": "add", "path": "cc.limit", "value": 300 },
+            { "op": "add", "path": "score", "value": 6 }
+          ],
+          "next": "Q6_car_decision"
+        },
+        {
+          "id": "Q5_C_open_new_card",
+          "label": "C",
+          "text": "Open a new card to raise your total limit.",
+          "teach": "A new card may reduce utilization, but adds a hard inquiry and reduces average age.",
+          "effects": [
+            { "op": "add", "path": "stats.accounts", "value": 1 },
+            { "op": "add", "path": "stats.hardInquiries12m", "value": 1 },
+            { "op": "add", "path": "cc.limit", "value": 800 },
+            { "op": "add", "path": "stats.avgAccountAgeMonths", "value": -3 },
+            { "op": "add", "path": "score", "value": -6 }
+          ],
+          "next": "Q6_car_decision"
+        }
+      ]
+    },
+    {
+      "id": "Q6_car_decision",
+      "title": "Car Time",
+      "prompt": "You need a car. What do you do?",
+      "options": [
+        {
+          "id": "Q6_A_cash_car",
+          "label": "A",
+          "text": "Buy a cheap car in cash.",
+          "teach": "No new debt or inquiry, but you also don’t add installment credit history.",
+          "effects": [
+            { "op": "add", "path": "cash", "value": -700 },
+            { "op": "add", "path": "score", "value": 1 }
+          ],
+          "next": "Q7_emergency_expense"
+        },
+        {
+          "id": "Q6_B_small_auto_loan",
+          "label": "B",
+          "text": "Take a small auto loan you can afford.",
+          "teach": "Installment loans can help credit mix, but only if you pay on time.",
+          "effects": [
+            { "op": "add", "path": "stats.accounts", "value": 1 },
+            { "op": "add", "path": "stats.hardInquiries12m", "value": 1 },
+            { "op": "set", "path": "installmentLoan.balance", "value": 5000 },
+            { "op": "set", "path": "installmentLoan.monthlyPayment", "value": 150 },
+            { "op": "add", "path": "score", "value": 4 }
+          ],
+          "next": "Q7_emergency_expense"
+        },
+        {
+          "id": "Q6_C_big_auto_loan",
+          "label": "C",
+          "text": "Take a bigger loan to get a nicer car.",
+          "teach": "More debt can increase financial stress and raises risk of missed payments.",
+          "effects": [
+            { "op": "add", "path": "stats.accounts", "value": 1 },
+            { "op": "add", "path": "stats.hardInquiries12m", "value": 1 },
+            { "op": "set", "path": "installmentLoan.balance", "value": 12000 },
+            { "op": "set", "path": "installmentLoan.monthlyPayment", "value": 320 },
+            { "op": "add", "path": "stats.stress", "value": 2 },
+            { "op": "add", "path": "score", "value": 2 }
+          ],
+          "next": "Q7_emergency_expense"
+        }
+      ]
+    },
+    {
+      "id": "Q7_emergency_expense",
+      "title": "Surprise Expense",
+      "prompt": "A surprise $600 expense hits. What’s your move?",
+      "options": [
+        {
+          "id": "Q7_A_use_savings",
+          "label": "A",
+          "text": "Use emergency savings.",
+          "teach": "Savings can prevent debt spikes and missed payments later.",
+          "effects": [
+            { "op": "add", "path": "cash", "value": -600 },
+            { "op": "add", "path": "score", "value": 2 }
+          ],
+          "next": "Q8_check_credit"
+        },
+        {
+          "id": "Q7_B_put_on_card",
+          "label": "B",
+          "text": "Put it on your credit card.",
+          "teach": "This can raise utilization; utilization affects scores even without late payments.",
+          "effects": [
+            { "op": "add", "path": "cc.balance", "value": 600 },
+            { "op": "add", "path": "score", "value": -6 }
+          ],
+          "next": "Q8_check_credit"
+        },
+        {
+          "id": "Q7_C_bad_short_term_loan",
+          "label": "C",
+          "text": "Use a BNPL / payday-style loan.",
+          "teach": "High fees and payment pressure can increase the chance of future late payments.",
+          "effects": [
+            { "op": "add", "path": "stats.stress", "value": 3 },
+            { "op": "add", "path": "installmentLoan.balance", "value": 600 },
+            { "op": "add", "path": "score", "value": -12 }
+          ],
+          "next": "Q8_check_credit"
+        }
+      ]
+    },
+    {
+      "id": "Q8_check_credit",
+      "title": "Checking Your Credit",
+      "prompt": "You check your credit. How do you do it?",
+      "options": [
+        {
+          "id": "Q8_A_soft_check",
+          "label": "A",
+          "text": "Check your score in an app/monitoring tool (soft check).",
+          "teach": "Soft checks don’t affect your credit score.",
+          "effects": [
+            { "op": "add", "path": "score", "value": 0 }
+          ],
+          "next": "Q9_rewards_spree"
+        },
+        {
+          "id": "Q8_B_apply_to_peek",
+          "label": "B",
+          "text": "Apply for a card just to ‘see if you qualify’.",
+          "teach": "Applications usually create a hard inquiry, which can lower scores short-term.",
+          "effects": [
+            { "op": "add", "path": "stats.hardInquiries12m", "value": 1 },
+            { "op": "add", "path": "score", "value": -5 }
+          ],
+          "next": "Q9_rewards_spree"
+        },
+        {
+          "id": "Q8_C_review_report",
+          "label": "C",
+          "text": "Pull and review your credit report for errors.",
+          "teach": "Reviewing your report can help you spot issues and dispute errors.",
+          "effects": [
+            { "op": "set", "path": "stats.riskFlags", "value": [] },
+            { "op": "add", "path": "score", "value": 0 }
+          ],
+          "next": "Q9_rewards_spree",
+          "bonusEvent": {
+            "id": "bonus_dispute_error",
+            "chance": 0.35,
+            "onTriggerEffects": [
+              { "op": "add", "path": "score", "value": 10 }
+            ],
+            "message": "You found an error and disputed it successfully (+10)."
+          }
+        }
+      ]
+    },
+    {
+      "id": "Q9_rewards_spree",
+      "title": "Rewards Temptation",
+      "prompt": "You’re tempted: open 3 cards for rewards this week?",
+      "options": [
+        {
+          "id": "Q9_A_apply_3",
+          "label": "A",
+          "text": "Yes, apply to 3 cards.",
+          "teach": "Multiple hard inquiries + lower average age can cause a noticeable score dip.",
+          "effects": [
+            { "op": "add", "path": "stats.hardInquiries12m", "value": 3 },
+            { "op": "add", "path": "stats.accounts", "value": 3 },
+            { "op": "add", "path": "stats.avgAccountAgeMonths", "value": -6 },
+            { "op": "add", "path": "score", "value": -18 }
+          ],
+          "next": "Q10_rental_application"
+        },
+        {
+          "id": "Q9_B_apply_1",
+          "label": "B",
+          "text": "Apply to 1 carefully chosen card.",
+          "teach": "One inquiry may have a smaller impact than several at once.",
+          "effects": [
+            { "op": "add", "path": "stats.hardInquiries12m", "value": 1 },
+            { "op": "add", "path": "stats.accounts", "value": 1 },
+            { "op": "add", "path": "stats.avgAccountAgeMonths", "value": -2 },
+            { "op": "add", "path": "score", "value": -6 }
+          ],
+          "next": "Q10_rental_application"
+        },
+        {
+          "id": "Q9_C_no_apply",
+          "label": "C",
+          "text": "Don’t apply; keep accounts stable.",
+          "teach": "Stability helps account age and avoids inquiry dings.",
+          "effects": [
+            { "op": "add", "path": "stats.avgAccountAgeMonths", "value": 1 },
+            { "op": "add", "path": "score", "value": 4 }
+          ],
+          "next": "Q10_rental_application"
+        }
+      ]
+    },
+    {
+      "id": "Q10_rental_application",
+      "title": "Apartment Application",
+      "prompt": "Apartment time: you apply to rent. What happens?",
+      "options": [
+        {
+          "id": "Q10_A_strong_profile",
+          "label": "A",
+          "text": "You kept utilization low and paid on time consistently.",
+          "teach": "Strong payment history + low utilization often leads to better approval terms.",
+          "conditions": [
+            { "op": "gte", "path": "stats.onTimeStreak", "value": 2 },
+            { "op": "lt", "path": "derived.utilizationPct", "value": 30 },
+            { "op": "eq", "path": "stats.latePayments", "value": 0 }
+          ],
+          "effects": [
+            { "op": "add", "path": "score", "value": 5 }
+          ],
+          "outcome": {
+            "result": "APPROVED_LOW_DEPOSIT",
+            "message": "Approved with a low deposit. Your credit profile looks strong."
+          },
+          "next": "END"
+        },
+        {
+          "id": "Q10_B_high_util_on_time",
+          "label": "B",
+          "text": "You paid on time, but your utilization stayed high.",
+          "teach": "High utilization can make you look riskier even if you never pay late.",
+          "conditions": [
+            { "op": "gte", "path": "stats.onTimeStreak", "value": 1 },
+            { "op": "gte", "path": "derived.utilizationPct", "value": 30 },
+            { "op": "eq", "path": "stats.latePayments", "value": 0 }
+          ],
+          "effects": [
+            { "op": "add", "path": "score", "value": -2 }
+          ],
+          "outcome": {
+            "result": "APPROVED_HIGH_DEPOSIT",
+            "message": "Approved, but with a higher deposit. Paying down balances could help."
+          },
+          "next": "END"
+        },
+        {
+          "id": "Q10_C_recent_late",
+          "label": "C",
+          "text": "You had a recent late payment.",
+          "teach": "Late payments can trigger denials or require a co-signer; rebuilding takes time.",
+          "conditions": [
+            { "op": "gte", "path": "stats.latePayments", "value": 1 }
+          ],
+          "effects": [
+            { "op": "add", "path": "score", "value": -5 }
+          ],
+          "outcome": {
+            "result": "DENIED_OR_COSIGNER",
+            "message": "Denied or co-signer required. Focus on on-time payments and lowering utilization."
+          },
+          "next": "END",
+          "rebuildChecklist": [
+            "Set autopay for at least the minimum payment",
+            "Pay down credit card balances to reduce utilization",
+            "Avoid new applications for a while",
+            "Review your credit reports for accuracy"
+          ]
+        }
+      ],
+      "fallback": {
+        "ifNoConditionsMatch": {
+          "effects": [{ "op": "add", "path": "score", "value": 0 }],
+          "outcome": {
+            "result": "APPROVED_STANDARD",
+            "message": "Approved with standard terms. Small improvements can help you qualify for better terms."
+          },
+          "next": "END"
+        }
+      }
+    }
+  ],
+  "endScreen": {
+    "summaryFields": [
+      "score",
+      "stats.onTimeStreak",
+      "stats.latePayments",
+      "stats.hardInquiries12m",
+      "derived.utilizationPct",
+      "cc.balance",
+      "cc.limit",
+      "installmentLoan.balance"
+    ],
+    "showScoreTimeline": true
+  }
+}
