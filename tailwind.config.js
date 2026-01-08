@@ -33,12 +33,14 @@ module.exports = {
           800: '#075985',
           900: '#0c4a6e',
         },
+        // Bright / Capital One Theme
         'clarity': {
-          'dark': '#001020',
-          'darker': '#000810',
-          'card': '#001830',
-          'border': '#002845',
-          'purple': '#D22E1E', 
+          'dark': '#F9FAFB',    // Light Gray (Gray-50)
+          'darker': '#FFFFFF',  // White
+          'card': '#FFFFFF',    // White
+          'border': '#E5E7EB',  // Gray-200
+          'text': '#0f172a',    // Slate-900 (Main Text)
+          'purple': '#D22E1E',  
           'blue': '#004977',
           'cyan': '#0073BB',
           'green': '#10b981',

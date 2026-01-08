@@ -5,11 +5,11 @@ import { Lightbulb, Eye } from 'lucide-react';
 
 export default function ClarityModeToggle({ enabled, onToggle }) {
   return (
-    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="inline-flex items-center gap-4 bg-clarity-card rounded-2xl p-2 pr-4 border border-clarity-border">
+    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="inline-flex items-center gap-4 bg-white rounded-2xl p-2 pr-4 border border-gray-200 shadow-sm">
       <button
         onClick={onToggle}
         className={`relative flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 ${
-          enabled ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg shadow-purple-500/25' : 'bg-clarity-dark text-gray-400 hover:text-white'
+          enabled ? 'bg-clarity-blue text-white shadow-lg' : 'bg-gray-100 text-gray-600 hover:text-gray-900'
         }`}
       >
         {enabled ? <Lightbulb className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
