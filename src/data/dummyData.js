@@ -20,6 +20,7 @@ export const creditFactors = [
     simpleExplanation: "You paid your bills on time 47 out of 49 times. That's like getting an A- on showing up! The bank sees you as reliable.",
     technicalExplanation: "Payment History comprises 35% of your FICO score. Your 95.9% on-time payment rate places you in the 'Excellent' category for this factor.",
     tip: "Set up autopay for at least the minimum payment to never miss a due date.",
+    whyThisWeight: "35% — The biggest factor because lenders care MOST about whether you'll actually pay them back. Think about it: if you were lending money to a friend, wouldn't their track record of repaying be the #1 thing you'd consider?",
   },
   {
     id: "utilization",
@@ -33,6 +34,7 @@ export const creditFactors = [
     simpleExplanation: "You're using $42 of every $100 the bank trusts you with. Try to keep this under $30 to look less risky!",
     technicalExplanation: "Credit Utilization Ratio: 42%. This measures revolving credit used vs. available. Optimal range is under 30%. Currently utilizing $4,200 of $10,000 total limit.",
     tip: "Pay down your balance before the statement closes, not just before the due date.",
+    whyThisWeight: "30% — Second biggest factor because using too much credit signals financial stress. If someone maxes out all their cards, they might be desperate for money. Keeping usage low shows you don't NEED credit to survive.",
   },
   {
     id: "credit-age",
@@ -46,6 +48,7 @@ export const creditFactors = [
     simpleExplanation: "Your credit accounts are like friendships—banks trust longer ones more. At 2.3 years, you're still the 'new kid' but getting there!",
     technicalExplanation: "Average Age of Accounts: 2.3 years. Oldest account: 4 years. This factor rewards longevity. Keep older accounts open even if unused.",
     tip: "Don't close your oldest credit card, even if you don't use it.",
+    whyThisWeight: "15% — Moderate weight because time proves consistency. Anyone can behave well for 6 months. But 10+ years of good behavior? That's a track record lenders trust.",
   },
   {
     id: "credit-mix",
@@ -59,6 +62,7 @@ export const creditFactors = [
     simpleExplanation: "You have 2 types of credit (credit cards). Banks like seeing you can handle different types, like a student loan or car payment too.",
     technicalExplanation: "Credit Mix: 2 revolving accounts. Consider diversifying with an installment loan. A healthy mix shows ability to manage various credit types.",
     tip: "A small credit-builder loan can add variety to your credit profile.",
+    whyThisWeight: "10% — Smaller factor because variety is nice but not essential. Managing a credit card AND a car loan shows you can handle different payment structures. But don't take loans just for mix!",
   },
   {
     id: "new-credit",
@@ -72,6 +76,7 @@ export const creditFactors = [
     simpleExplanation: "You only asked for new credit once recently. Each time you apply, it's like asking someone to trust you—too many asks looks desperate!",
     technicalExplanation: "Hard Inquiries: 1 in last 12 months. New accounts: 1 in last 6 months. Inquiries impact score for 12 months, remain on report for 24 months.",
     tip: "When shopping for loans, do it within a 14-day window to count as one inquiry.",
+    whyThisWeight: "10% — Smaller factor because occasional new credit is normal. But opening 5 cards in a month? Red flag! It suggests you might be planning to run up debt and disappear.",
   },
 ];
 

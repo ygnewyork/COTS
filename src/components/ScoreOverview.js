@@ -69,14 +69,71 @@ export default function ScoreOverview({ clarityMode }) {
       </div>
 
       <div className="mb-6">
-        <h4 className="text-sm font-medium text-gray-600 mb-3">6-Month Trend</h4>
-        <div className="flex items-end justify-between h-20 gap-1">
-          {scoreHistory.map((item, index) => (
-            <motion.div key={item.month} initial={{ height: 0 }} animate={{ height: `${((item.score - 600) / 100) * 100}%` }} transition={{ delay: index * 0.1 }} className="flex-1 bg-gradient-to-t from-purple-500/50 to-blue-500/50 rounded-t-sm" />
-          ))}
+        <div className="flex items-center justify-between mb-3">
+          <h4 className="text-sm font-medium text-gray-600">Credit Score Trend (6 Months)</h4>
+          <span className="text-xs text-gray-400"></span>
         </div>
-        <div className="flex justify-between mt-2">
-          {scoreHistory.map((item) => (<span key={item.month} className="text-xs text-gray-500 flex-1 text-center">{item.month}</span>))}
+        <div className="relative h-32">
+          {/* Grid lines */}
+          <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
+            <div className="flex items-center">
+              <span className="text-xs text-gray-400 w-8">700</span>
+              <div className="flex-1 border-t border-dashed border-gray-200"></div>
+            </div>
+            <div className="flex items-center">
+              <span className="text-xs text-gray-400 w-8">650</span>
+              <div className="flex-1 border-t border-dashed border-gray-200"></div>
+            </div>
+            <div className="flex items-center">
+              <span className="text-xs text-gray-400 w-8">600</span>
+              <div className="flex-1 border-t border-gray-300"></div>
+            </div>
+          </div>
+          {/* Bars */}
+          <div className="absolute left-8 right-0 bottom-0 top-0 flex items-end justify-between gap-3 pb-[1px]">
+            {scoreHistory.map((item, index) => {
+              const heightPercent = ((item.score - 600) / 100) * 100;
+              // Color based on score: red (600) -> yellow (650) -> green (700+)
+              const getBarColor = (score) => {
+                if (score < 650) {
+                  // Red to yellow gradient for 600-649
+                  const percent = (score - 600) / 50;
+                  return `rgb(${220}, ${Math.round(50 + percent * 150)}, ${Math.round(30 + percent * 20)})`;
+                } else {
+                  // Yellow to green gradient for 650-700+
+                  const percent = Math.min((score - 650) / 50, 1);
+                  return `rgb(${Math.round(220 - percent * 180)}, ${Math.round(200 - percent * 20)}, ${Math.round(50 + percent * 90)})`;
+                }
+              };
+              return (
+                <div key={item.month} className="flex-1 flex flex-col items-center justify-end" style={{ height: '100%' }}>
+                  <motion.span 
+                    initial={{ opacity: 0 }} 
+                    animate={{ opacity: 1 }} 
+                    transition={{ delay: index * 0.1 + 0.3 }}
+                    className="text-xs font-bold mb-1"
+                    style={{ color: getBarColor(item.score) }}
+                  >
+                    {item.score}
+                  </motion.span>
+                  <motion.div 
+                    initial={{ height: 0 }} 
+                    animate={{ height: `${Math.max(heightPercent, 10)}px` }} 
+                    transition={{ delay: index * 0.1, duration: 0.5 }} 
+                    className="w-full rounded-t-md" 
+                    style={{ 
+                      height: `${heightPercent}%`,
+                      minHeight: '8px',
+                      backgroundColor: getBarColor(item.score)
+                    }}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <div className="flex justify-between mt-2 ml-8 border-t border-gray-200 pt-2">
+          {scoreHistory.map((item) => (<span key={item.month} className="text-xs text-gray-500 flex-1 text-center font-medium">{item.month}</span>))}
         </div>
       </div>
 

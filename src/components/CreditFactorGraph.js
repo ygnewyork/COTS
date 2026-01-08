@@ -24,8 +24,8 @@ export default function CreditFactorGraph({ clarityMode }) {
   }, []);
 
   const centerX = dimensions.width / 2;
-  const centerY = dimensions.height / 2;
-  const baseRadius = 140;
+  const centerY = dimensions.height / 2 + 20; // Offset down slightly to prevent top cutoff
+  const baseRadius = 120; // Reduced radius to give more margin
 
   const getNodePosition = (index, total, factor) => {
     const angle = (index / total) * 2 * Math.PI - Math.PI / 2;
@@ -34,12 +34,24 @@ export default function CreditFactorGraph({ clarityMode }) {
   };
 
   const getNodeSize = (weight, isHovered) => {
-    const baseSize = 30 + (weight * 1.2);
+    const baseSize = 40 + (weight * 1.0); // Increased minimum size from 30 to 40
     return isHovered ? baseSize * 1.3 : baseSize;
   };
 
+  // Get abbreviated name for each factor
+  const getFactorLabel = (factorName) => {
+    const labels = {
+      'Payment History': 'Payment',
+      'Credit Utilization': 'Utilization', 
+      'Credit Age': 'Age',
+      'Credit Mix': 'Mix',
+      'New Credit': 'New'
+    };
+    return labels[factorName] || factorName.split(' ')[0];
+  };
+
   return (
-    <motion.div ref={containerRef} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm relative overflow-hidden">
+    <motion.div ref={containerRef} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm relative">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="text-lg font-semibold text-gray-900">Credit Factor Web</h3>
@@ -133,7 +145,7 @@ export default function CreditFactorGraph({ clarityMode }) {
                   x={pos.x} y={pos.y + 13} 
                   textAnchor="middle" 
                   fill="white" 
-                  fontSize={10} 
+                  fontSize={isHovered ? 11 : 10} 
                   fontWeight="500"
                   className="pointer-events-none"
                   style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}
@@ -141,7 +153,7 @@ export default function CreditFactorGraph({ clarityMode }) {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5 + index * 0.08 }}
                 >
-                  {factor.name.split(' ')[0]}
+                  {getFactorLabel(factor.name)}
                 </motion.text>
               </g>
             );
@@ -238,7 +250,7 @@ export default function CreditFactorGraph({ clarityMode }) {
 
       {clarityMode && (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-4 bg-blue-50 border border-blue-200 rounded-xl p-4">
-          <p className="text-sm text-clarity-blue"><span className="font-medium">🎓 Learning Mode:</span> The bigger the bubble, the more it affects your score. Payment History (35%) is the biggest!</p>
+          <p className="text-sm text-clarity-blue"><span className="font-medium"></span> The bigger the bubble, the more it affects your score. Payment History (35%) is the biggest!</p>
         </motion.div>
       )}
     </motion.div>

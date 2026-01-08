@@ -90,36 +90,104 @@ export default function FactorCards({ clarityMode }) {
                   {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                 </div>
               </div>
-              
-              <AnimatePresence>
-                {isExpanded && clarityMode && (
-                  <motion.div 
-                    initial={{ opacity: 0, height: 0 }} 
-                    animate={{ opacity: 1, height: 'auto' }} 
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="mt-4 pt-4 border-t border-gray-100">
-                      <p className="text-sm text-gray-700 leading-relaxed">{factor.simpleExplanation}</p>
-                      <div className="mt-3 p-3 bg-blue-50 rounded-lg">
-                        <p className="text-xs font-semibold text-clarity-blue mb-1">💡 Quick Tip</p>
-                        <p className="text-xs text-blue-700">
-                          {factor.status === 'excellent' && "Keep doing what you're doing! This factor is helping your score."}
-                          {factor.status === 'good' && "You're on the right track. Small improvements can boost your score."}
-                          {factor.status === 'fair' && "There's room for improvement here. Focus on this to raise your score."}
-                          {factor.status === 'building' && "This takes time to build. Stay consistent and patient."}
-                          {factor.status === 'poor' && "This is an opportunity! Improving this factor can significantly boost your score."}
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
             </motion.div>
           );
         })}
       </div>
+
+      {/* Expanded card popup overlay */}
+      <AnimatePresence>
+        {expandedCard && clarityMode && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/20 z-40 flex items-center justify-center p-4"
+              onClick={() => setExpandedCard(null)}
+            >
+              {/* Popup */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+                className="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-gray-200 p-6 z-50 overflow-y-auto max-h-[80vh]"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {(() => {
+                  const factor = creditFactors.find(f => f.id === expandedCard);
+                if (!factor) return null;
+                return (
+                  <>
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-3">
+                        <div 
+                          className="w-14 h-14 rounded-xl flex items-center justify-center text-lg font-bold" 
+                          style={{ backgroundColor: `${factor.color}22`, color: factor.color }}
+                        >
+                          {factor.weight}%
+                        </div>
+                        <div>
+                          <h4 className="text-lg font-bold text-gray-900">{factor.name}</h4>
+                          <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium mt-1 ${getStatusColor(factor.status)}`}>
+                            {getStatusIcon(factor.status)}
+                            <span>{factor.status.charAt(0).toUpperCase() + factor.status.slice(1)}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <button 
+                        onClick={() => setExpandedCard(null)}
+                        className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                      >
+                        <X className="w-5 h-5 text-gray-500" />
+                      </button>
+                    </div>
+
+                    <div className="mb-4">
+                      <div className="flex justify-between text-sm mb-2">
+                        <span className="text-gray-500">Score</span>
+                        <span className="font-semibold" style={{ color: factor.color }}>{factor.score}/100</span>
+                      </div>
+                      <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+                        <motion.div 
+                          className="h-full rounded-full" 
+                          style={{ backgroundColor: factor.color }} 
+                          initial={{ width: 0 }} 
+                          animate={{ width: `${factor.score}%` }} 
+                        />
+                      </div>
+                      <p className="text-sm text-gray-600 mt-2">Current: <span className="font-medium">{factor.value}</span></p>
+                    </div>
+
+                    <p className="text-gray-700 leading-relaxed mb-4">{factor.simpleExplanation}</p>
+                    
+                    {factor.whyThisWeight && (
+                      <div className="p-4 bg-purple-50 rounded-xl border border-purple-100 mb-3">
+                        <p className="text-sm font-semibold text-purple-700 mb-1">📊 Why This Weight?</p>
+                        <p className="text-sm text-purple-700">{factor.whyThisWeight}</p>
+                      </div>
+                    )}
+                    
+                    <div className="p-4 bg-blue-50 rounded-xl">
+                      <p className="text-sm font-semibold text-clarity-blue mb-1">💡 Quick Tip</p>
+                      <p className="text-sm text-blue-700">
+                        {factor.status === 'excellent' && "Keep doing what you're doing! This factor is helping your score."}
+                        {factor.status === 'good' && "You're on the right track. Small improvements can boost your score."}
+                        {factor.status === 'fair' && "There's room for improvement here. Focus on this to raise your score."}
+                        {factor.status === 'building' && "This takes time to build. Stay consistent and patient."}
+                        {factor.status === 'poor' && "This is an opportunity! Improving this factor can significantly boost your score."}
+                      </p>
+                    </div>
+                  </>
+                );
+              })()}
+              </motion.div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

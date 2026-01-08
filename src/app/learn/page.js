@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Navbar from '@/components/Navbar';
-import { Search, BookOpen, ChevronDown, ChevronUp, GraduationCap } from 'lucide-react';
+import { Search, BookOpen, ChevronDown, ChevronUp, GraduationCap, TrendingUp, DollarSign, Home, CreditCard, Car, Shield } from 'lucide-react';
 
 const definitions = [
   // Basics
@@ -60,6 +60,7 @@ export default function LearnPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [expandedIndex, setExpandedIndex] = useState(null);
   const [activeCategory, setActiveCategory] = useState('All');
+  const [whyScoreMattersExpanded, setWhyScoreMattersExpanded] = useState(true);
 
   const categories = ['All', 'Basics', 'Score Factors', 'Credit Cards', 'Loans', 'Negative Items', 'Strategies'];
 
@@ -148,6 +149,97 @@ export default function LearnPage() {
             <p className="text-gray-500 mb-4 font-medium">
               {filteredDefs.length} {filteredDefs.length === 1 ? 'term' : 'terms'} found
             </p>
+
+            {/* Why Higher Score Matters Card */}
+            {activeCategory === 'All' && searchTerm === '' && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="bg-gradient-to-br from-clarity-blue to-blue-700 rounded-2xl p-6 mb-8 text-white shadow-xl"
+              >
+                <div 
+                  className="flex items-start justify-between cursor-pointer"
+                  onClick={() => setWhyScoreMattersExpanded(!whyScoreMattersExpanded)}
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="p-3 bg-white/20 rounded-xl">
+                      <TrendingUp className="w-8 h-8" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold mb-2">Why a Higher Credit Score Matters</h3>
+                      <p className="text-blue-100">Your score isn't just a number — it's your financial reputation that unlocks real money savings.</p>
+                    </div>
+                  </div>
+                  <button className="p-2 bg-white/20 rounded-lg hover:bg-white/30 transition-colors ml-4 flex-shrink-0">
+                    {whyScoreMattersExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                  </button>
+                </div>
+                
+                {whyScoreMattersExpanded && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                  >
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-5">
+                      <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                        <div className="flex items-center gap-3 mb-2">
+                          <Home className="w-5 h-5 text-blue-200" />
+                          <span className="font-bold">Lower Mortgage Rates</span>
+                        </div>
+                        <p className="text-sm text-blue-100">A 760+ score vs. 620 score can save you <span className="font-bold text-white">$100,000+</span> in interest over a 30-year mortgage.</p>
+                      </div>
+                      
+                      <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                        <div className="flex items-center gap-3 mb-2">
+                          <Car className="w-5 h-5 text-blue-200" />
+                          <span className="font-bold">Better Auto Loans</span>
+                        </div>
+                        <p className="text-sm text-blue-100">Excellent credit can get you <span className="font-bold text-white">3-4% APR</span> vs. 15%+ for poor credit — saving thousands per car.</p>
+                      </div>
+                      
+                      <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                        <div className="flex items-center gap-3 mb-2">
+                          <CreditCard className="w-5 h-5 text-blue-200" />
+                          <span className="font-bold">Premium Card Access</span>
+                        </div>
+                        <p className="text-sm text-blue-100">Top travel cards with <span className="font-bold text-white">$1,000+ in perks</span> require scores of 740+. Bad credit = high-fee cards only.</p>
+                      </div>
+                      
+                      <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                        <div className="flex items-center gap-3 mb-2">
+                          <DollarSign className="w-5 h-5 text-blue-200" />
+                          <span className="font-bold">Lower Insurance Rates</span>
+                        </div>
+                        <p className="text-sm text-blue-100">Many insurers use credit-based scores. Poor credit can mean <span className="font-bold text-white">40-50% higher</span> car insurance premiums.</p>
+                      </div>
+                      
+                      <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                        <div className="flex items-center gap-3 mb-2">
+                          <Home className="w-5 h-5 text-blue-200" />
+                          <span className="font-bold">Easier Apartment Rentals</span>
+                        </div>
+                        <p className="text-sm text-blue-100">Landlords check credit. Low scores mean <span className="font-bold text-white">rejected applications</span> or massive security deposits.</p>
+                      </div>
+                      
+                      <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20">
+                        <div className="flex items-center gap-3 mb-2">
+                          <Shield className="w-5 h-5 text-blue-200" />
+                          <span className="font-bold">No Utility Deposits</span>
+                        </div>
+                        <p className="text-sm text-blue-100">Good credit = no deposits for electricity, phone, or internet. Bad credit = <span className="font-bold text-white">$200-500 deposits</span> tied up.</p>
+                      </div>
+                    </div>
+                    
+                    <div className="mt-5 pt-5 border-t border-white/20 flex items-center gap-3">
+                      <div className="text-4xl">💡</div>
+                      <p className="text-sm text-blue-100"><span className="font-bold text-white">Bottom line:</span> Over a lifetime, excellent credit vs. poor credit can mean <span className="font-bold text-white">$200,000+ in savings</span>. The effort to build your score is one of the best investments you'll ever make!</p>
+                    </div>
+                  </motion.div>
+                )}
+              </motion.div>
+            )}
 
             {/* Definitions Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
