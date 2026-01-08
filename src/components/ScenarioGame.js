@@ -26,19 +26,19 @@ const scenarios = [
         id: 1,
         title: "Your First Credit Card!",
         description:
-            "Congratulations! You just got approved for your first credit card with a $1,000 limit. Your first statement of $200 is due. What do you do?",
+            "Congratulations! You just got approved for your first credit card with a $1,000 limit. Your first statement represents a balance of $200. It is due in 3 days. What do you do?",
         choices: [
             {
-                text: "Pay full balance on time",
+                text: "Pay the full $200 balance",
                 scoreImpact: +15,
                 debtImpact: 0,
                 historyImpact: +10,
                 utilizationImpact: -20,
                 badge: "On-Time Payer",
                 feedback:
-                    "Perfect! Paying in full avoids interest AND builds excellent payment history. This is the #1 way to build credit.",
+                    "Perfect! Paying in full avoids all interest charges AND builds excellent payment history. This is the golden rule of credit.",
                 explanation:
-                    "Payment history is 35% of your credit score. Paying on time every month is the single most important thing you can do.",
+                    "Payment history makes up 35% of your FICO score. By paying the full statement balance, you avoid interest (APR) while proving to lenders you are a low-risk borrower.",
             },
             {
                 text: "Pay only the minimum ($25)",
@@ -47,20 +47,20 @@ const scenarios = [
                 historyImpact: +5,
                 utilizationImpact: +5,
                 feedback:
-                    "You avoided a late payment, but now you owe $175 plus interest. At 24% APR, you'll pay an extra $42 in interest over time.",
+                    "You avoided a late fee, but you fell into the interest trap. You now owe $175, and interest will start compounding daily.",
                 explanation:
-                    "Minimum payments keep your account in good standing but carry a balance that accrues interest daily.",
+                    "Paying the minimum keeps your account 'current' (so no late marks), but you lose your 'grace period.' You will now be charged interest (usually 20-29%) on every single purchase you make moving forward.",
             },
             {
                 text: "Miss the payment entirely",
-                scoreImpact: -45,
+                scoreImpact: -50,
                 debtImpact: +235,
-                historyImpact: -25,
+                historyImpact: -30,
                 utilizationImpact: +10,
                 feedback:
-                    "Disaster! $35 late fee added. If 30+ days late, this goes on your credit report for 7 YEARS. Your score tanks.",
+                    "Disaster! You were hit with a $35 late fee. If the payment remains unpaid for 30 days, it marks your credit report for 7 years.",
                 explanation:
-                    "Late payments over 30 days are reported to credit bureaus and stay on your report for 7 years, severely impacting your score.",
+                    "A single payment missed by 30+ days can drop a good credit score by over 100 points immediately. It is the single most damaging common mistake you can make.",
             },
         ],
     },
@@ -68,30 +68,30 @@ const scenarios = [
         id: 2,
         title: "The Shopping Spree",
         description:
-            "Black Friday deals are amazing! You could buy $800 worth of stuff on your $1,000 limit card. Your current balance is $100.",
+            "Black Friday deals are amazing! You could buy $800 worth of electronics on your card (Limit: $1,000). Your current balance is $100.",
         choices: [
             {
-                text: "Max it out! YOLO!",
-                scoreImpact: -25,
+                text: "Max it out! ($800 purchase)",
+                scoreImpact: -30,
                 debtImpact: +800,
                 historyImpact: 0,
-                utilizationImpact: +70,
+                utilizationImpact: +80,
                 feedback:
-                    "Your utilization just hit 90%! Lenders see this as desperate behavior. Your score drops significantly.",
+                    "Your utilization just hit 90%! Even if you pay it off later, your score will tank temporarily when the statement closes.",
                 explanation:
-                    "Credit utilization (how much you use vs. your limit) is 30% of your score. Experts recommend staying under 30%.",
+                    "Credit Utilization (amount used / total limit) is 30% of your score. Using >30% scares lenders. Using >90% is seen as a desperate financial risk.",
             },
             {
-                text: "Buy $200 worth, stay under 30%",
+                text: "Buy $200 worth (Total utilization: 30%)",
                 scoreImpact: +10,
                 debtImpact: +200,
                 historyImpact: 0,
                 utilizationImpact: +10,
                 badge: "Smart Spender",
                 feedback:
-                    "Smart! You got some deals while keeping utilization at 30%. This shows lenders you're responsible.",
+                    "Smart! You took advantage of the sale but kept your total balance at $300 (30% of your limit).",
                 explanation:
-                    "Keeping utilization under 30% signals to lenders that you're not dependent on credit.",
+                    "The 30% rule is a good guideline. However, the 'High Achievers' (scores of 800+) typically keep utilization below 7%.",
             },
             {
                 text: "Skip the sales, pay off the $100",
@@ -100,9 +100,9 @@ const scenarios = [
                 historyImpact: 0,
                 utilizationImpact: -10,
                 feedback:
-                    "Disciplined! You prioritized debt payoff over temporary discounts. Your utilization drops to 0%.",
+                    "Disciplined! You prioritized debt payoff over consumerism. Your utilization drops to 0%.",
                 explanation:
-                    "0% utilization is great, though some experts suggest 1-9% is optimal to show active card usage.",
+                    "0% utilization is safe, though having a tiny balance (like $5) reported on the statement date can sometimes result in a slightly higher score than $0, as it shows active usage.",
             },
         ],
     },
@@ -110,19 +110,19 @@ const scenarios = [
         id: 3,
         title: "Credit Limit Increase Offer",
         description:
-            "Your bank offers to raise your credit limit from $1,000 to $3,000. No hard inquiry required!",
+            "Your bank offers to raise your credit limit from $1,000 to $3,000. They confirm this will require NO hard inquiry.",
         choices: [
             {
                 text: "Accept the increase!",
-                scoreImpact: +20,
+                scoreImpact: +25,
                 debtImpact: 0,
                 historyImpact: 0,
                 utilizationImpact: -15,
                 badge: "Limit Builder",
                 feedback:
-                    "Excellent! Your utilization ratio just dropped by 66% without paying anything. Free score boost!",
+                    "Excellent move! Your utilization ratio just dropped by 66% without you paying a dime. This is a free score boost.",
                 explanation:
-                    "Higher limits with same spending = lower utilization. This is a 'hack' for improving your score.",
+                    "Utilization is calculated as (Balance / Total Limit). By increasing the denominator (Limit), your percentage drops, which boosts your score. Always accept soft-pull increases.",
             },
             {
                 text: "Decline - I might overspend",
@@ -131,9 +131,9 @@ const scenarios = [
                 historyImpact: 0,
                 utilizationImpact: 0,
                 feedback:
-                    "Understandable if you struggle with temptation, but you missed a free utilization improvement.",
+                    "A safe choice if you struggle with impulse control, but you missed out on optimizing your score.",
                 explanation:
-                    "If you have good spending discipline, higher limits are always beneficial for your credit score.",
+                    "Financial psychology is real. If a higher limit tempts you to spend more, declining is the right personal choice, even if it's the 'wrong' math choice.",
             },
         ],
     },
@@ -141,30 +141,30 @@ const scenarios = [
         id: 4,
         title: "The Emergency Car Repair",
         description:
-            "Your car breaks down. Repair cost: $600. You have $200 in savings. How do you handle this?",
+            "Your car breaks down. Repair cost: $600. You have $200 in your checking account. How do you handle this?",
         choices: [
             {
-                text: "Put it all on credit card",
+                text: "Put it all on the credit card",
                 scoreImpact: -10,
                 debtImpact: +600,
                 historyImpact: 0,
                 utilizationImpact: +40,
                 feedback:
-                    "You solved the emergency but added $600 in high-interest debt. Make a payoff plan ASAP.",
+                    "You fixed the car, but you're now carrying high-interest debt. This emergency will cost you more than $600 due to interest.",
                 explanation:
-                    "Credit cards for emergencies is okay, but create a plan to pay it off quickly to avoid interest spiraling.",
+                    "This is why an 'Emergency Fund' is vital. Without cash reserves, emergencies become debt traps. Create a plan to pay this off within 2 months.",
             },
             {
-                text: "Use savings + payment plan with mechanic",
+                text: "Use cash + negotiate payment plan",
                 scoreImpact: +5,
-                debtImpact: +200,
+                debtImpact: +400,
                 historyImpact: +5,
-                utilizationImpact: +10,
+                utilizationImpact: 0,
                 badge: "Problem Solver",
                 feedback:
-                    "Great negotiation! Many mechanics offer 0% payment plans. You minimized debt and kept some savings.",
+                    "Great negotiation! You used your cash ($200) and the mechanic agreed to a payment plan for the rest. No credit card interest!",
                 explanation:
-                    "Always ask about payment plans! Many vendors offer interest-free options that don't affect your credit.",
+                    "Many service providers (mechanics, dentists, vets) offer interest-free payment plans if you ask. This protects your credit utilization and saves you money.",
             },
             {
                 text: "Ignore it, take the bus",
@@ -173,9 +173,9 @@ const scenarios = [
                 historyImpact: 0,
                 utilizationImpact: 0,
                 feedback:
-                    "You avoided debt but might lose your job if you can't get to work. Sometimes debt is necessary.",
+                    "You avoided debt, but if reliable transport is needed for your job, you're risking your income.",
                 explanation:
-                    "Good debt enables income. Avoiding all debt isn't always the smartest financial choice.",
+                    "Financial health isn't just about credit scores; it's about income stability. Sometimes taking on strategic debt is necessary to maintain employment.",
             },
         ],
     },
@@ -183,18 +183,18 @@ const scenarios = [
         id: 5,
         title: "The Second Card Decision",
         description:
-            "You've had your card for a year. A new card offers 2% cashback and $200 sign-up bonus. Should you apply?",
+            "You've had your first card for a year. A new card offers 2% cashback and a $200 sign-up bonus. Should you apply?",
         choices: [
             {
                 text: "Apply for it!",
-                scoreImpact: -8,
+                scoreImpact: -5,
                 debtImpact: 0,
                 historyImpact: -5,
                 utilizationImpact: -10,
                 feedback:
-                    "Short-term score dip from hard inquiry, but more available credit helps long-term. Plus, free $200!",
+                    "Short-term dip, long-term gain! The hard inquiry drops you ~5 points, but more available credit helps you later. Plus, free $200!",
                 explanation:
-                    "Hard inquiries drop your score 5-10 points temporarily but fall off after 2 years. Worth it for good cards.",
+                    "Hard inquiries stay on your report for 2 years but only impact your score for 1 year. The benefits of a better rewards structure usually outweigh the temporary dip.",
             },
             {
                 text: "Wait another year",
@@ -203,20 +203,20 @@ const scenarios = [
                 historyImpact: +5,
                 utilizationImpact: 0,
                 feedback:
-                    "Conservative approach. Your average account age keeps growing, which helps your score.",
+                    "Conservative. Your 'Average Age of Accounts' continues to grow, which strengthens your profile.",
                 explanation:
-                    "Average age of accounts is 15% of your score. Waiting can be strategic if you're not in a rush.",
+                    "Length of credit history is 15% of your score. Opening new accounts lowers your 'Average Age.' If you plan to buy a house soon, waiting is better.",
             },
             {
                 text: "Apply for 3 cards at once!",
-                scoreImpact: -35,
+                scoreImpact: -40,
                 debtImpact: 0,
                 historyImpact: -15,
                 utilizationImpact: -5,
                 feedback:
-                    "Triple hard inquiries! Lenders see this as desperate. Your score takes a big hit.",
+                    "Denied! Lenders saw 'velocity of credit' (seeking too much credit too fast). You look risky and desperate.",
                 explanation:
-                    "Multiple applications in a short period is a red flag to lenders, suggesting financial distress.",
+                    "Applying for multiple cards in a short window is a major red flag. Rule of thumb: Wait at least 6 months between credit card applications.",
             },
         ],
     },
@@ -224,7 +224,7 @@ const scenarios = [
         id: 6,
         title: "The Forgotten Subscription",
         description:
-            "You realize you've been paying $15/month for a streaming service you never use. It's been 6 months.",
+            "You review your statement and realize you've been paying $15/month for a streaming service you haven't watched in 6 months.",
         choices: [
             {
                 text: "Cancel immediately",
@@ -234,20 +234,20 @@ const scenarios = [
                 utilizationImpact: 0,
                 badge: "Budget Boss",
                 feedback:
-                    "Good catch! That's $90 wasted, but you stopped the bleeding. Set calendar reminders for free trials!",
+                    "Good catch! That's $90 wasted, but you stopped the bleeding. Always audit your statements.",
                 explanation:
-                    "Subscription creep is real. Review your statements monthly to catch forgotten recurring charges.",
+                    "Recurring subscriptions are the 'silent killers' of budgets. Companies bank on you forgetting to cancel. Review your credit card statement line-by-line every month.",
             },
             {
-                text: "Keep it, I might use it",
+                text: "Keep it, I might watch a show later",
                 scoreImpact: 0,
                 debtImpact: +15,
                 historyImpact: 0,
                 utilizationImpact: 0,
                 feedback:
-                    "That's $180/year for 'might use.' This is how small leaks sink financial ships.",
+                    "That's $180/year for 'might.' Wealth is built by plugging small leaks in your bucket.",
                 explanation:
-                    "The average American wastes $240/year on unused subscriptions. Audit regularly!",
+                    "The Opportunity Cost principle: That $15/month invested in the S&P 500 for 10 years would be worth over $2,500. Don't pay for what you don't use.",
             },
         ],
     },
@@ -255,30 +255,30 @@ const scenarios = [
         id: 7,
         title: "The Credit Report Check",
         description:
-            "You pull your free annual credit report and find an account you don't recognize - a $500 collection!",
+            "You pull your free annual credit report and find a $500 collection account from a utility company... but you never lived in that city!",
         choices: [
             {
-                text: "Dispute it with all 3 bureaus",
-                scoreImpact: +40,
+                text: "Dispute it with the credit bureaus",
+                scoreImpact: +50,
                 debtImpact: 0,
                 historyImpact: +15,
                 utilizationImpact: 0,
                 badge: "Credit Defender",
                 feedback:
-                    "You disputed the error with documentation. It was removed! Your score jumps significantly.",
+                    "You filed a dispute online. The bureau investigated, found no proof it was yours, and DELETED it. Your score soars!",
                 explanation:
-                    "1 in 4 credit reports have errors. Disputing inaccurate items is FREE and can dramatically boost your score.",
+                    "Under the Fair Credit Reporting Act, bureaus must remove unverifiable information. Never pay a debt that isn't yours—dispute it first.",
             },
             {
-                text: "Just pay it to make it go away",
-                scoreImpact: +10,
+                text: "Just pay it to resolve it",
+                scoreImpact: +5,
                 debtImpact: +500,
                 historyImpact: +5,
                 utilizationImpact: 0,
                 feedback:
-                    "You paid a debt that wasn't yours! Always verify before paying. Paid collections still hurt your score.",
+                    "You wasted $500. Worse, the 'Paid Collection' stays on your report for 7 years, still hurting your score.",
                 explanation:
-                    "Paying a collection doesn't remove it from your report. A 'paid collection' still shows for 7 years.",
+                    "Paying a collection does NOT remove it from your report (unless you negotiate a 'Pay for Delete'). It simply updates the status to 'Paid,' which lenders still view negatively.",
             },
             {
                 text: "Ignore it",
@@ -287,40 +287,40 @@ const scenarios = [
                 historyImpact: -10,
                 utilizationImpact: 0,
                 feedback:
-                    "The collection remains, dragging down your score. It could also be identity theft getting worse!",
+                    "The collection sits there, dragging your score down. It might also be a sign of identity theft.",
                 explanation:
-                    "Ignoring collections lets them grow with fees and interest. They can also lead to lawsuits.",
+                    "Ignoring errors makes them look valid. If this was identity theft, the thief could be opening other accounts in your name right now.",
             },
         ],
     },
     {
         id: 8,
-        title: "The Balance Transfer Offer",
+        title: "The Balance Transfer Strategy",
         description:
-            "You have $2,000 in credit card debt at 24% APR. A new card offers 0% APR for 18 months on balance transfers (3% fee).",
+            "You have $2,000 debt at 24% APR on Card A. Card B offers 0% APR for 18 months on transfers, with a 3% transfer fee.",
         choices: [
             {
-                text: "Transfer the balance!",
+                text: "Transfer the balance to Card B",
                 scoreImpact: -5,
                 debtImpact: +60,
                 historyImpact: 0,
                 utilizationImpact: 0,
                 badge: "Debt Strategist",
                 feedback:
-                    "Smart! You pay $60 fee but save ~$720 in interest over 18 months. Make sure to pay it off before 0% ends!",
+                    "Smart move. You pay a one-time $60 fee, but you stop the $40/month interest charges immediately.",
                 explanation:
-                    "Balance transfers can save hundreds in interest. The key is paying off BEFORE the promotional period ends.",
+                    "This is a mathematical win. However, you MUST pay off the debt within the 18 months. If you don't, you might get hit with retroactive interest.",
             },
             {
-                text: "Keep paying current card",
+                text: "Keep paying Card A",
                 scoreImpact: 0,
                 debtImpact: +40,
                 historyImpact: 0,
                 utilizationImpact: 0,
                 feedback:
-                    "You'll pay an extra $720+ in interest over time. Sometimes the math clearly favors action.",
+                    "You are losing money. At 24% APR, barely any of your monthly payment is going toward the principal.",
                 explanation:
-                    "At 24% APR, a $2,000 balance costs ~$40/month in interest alone. Balance transfers can break this cycle.",
+                    "High-interest debt destroys wealth. If you can qualify for a 0% transfer or a lower-interest consolidation loan, almost always take it.",
             },
         ],
     },
@@ -328,41 +328,30 @@ const scenarios = [
         id: 9,
         title: "The Co-Signer Request",
         description:
-            "Your sibling with bad credit asks you to co-sign their $10,000 car loan. They promise to make all payments.",
+            "Your sibling with bad credit asks you to co-sign their $15,000 car loan. They promise to make all the payments.",
         choices: [
             {
-                text: "Sure, family first!",
-                scoreImpact: -15,
-                debtImpact: +10000,
-                historyImpact: -5,
+                text: "Sign the papers, family first!",
+                scoreImpact: -20,
+                debtImpact: +15000,
+                historyImpact: -10,
                 utilizationImpact: 0,
                 feedback:
-                    "The loan now shows on YOUR credit report. If they miss ONE payment, YOUR score suffers. You're 100% liable.",
+                    "DANGER! The loan now appears on YOUR report. Your debt-to-income ratio skyrocketed, making it hard for YOU to get loans.",
                 explanation:
-                    "Co-signing means you're equally responsible for the debt. 38% of co-signers end up paying some or all of the loan.",
+                    "Co-signing makes you 100% legally liable. If they miss a payment, the bank sues YOU, not them. It effectively freezes your ability to get credit until the car is paid off.",
             },
             {
-                text: "Offer to help them build credit another way",
+                text: "Refuse, but offer advice",
                 scoreImpact: 0,
                 debtImpact: 0,
                 historyImpact: 0,
                 utilizationImpact: 0,
                 badge: "Wise Helper",
                 feedback:
-                    "Smart boundary! You suggest they get a secured card or become an authorized user on someone's card instead.",
+                    "It was an awkward conversation, but you protected your financial future. You suggested they look into a 'Secured Card' instead.",
                 explanation:
-                    "There are safer ways to help someone build credit without putting your own financial future at risk.",
-            },
-            {
-                text: "Gift them $1,000 for down payment",
-                scoreImpact: 0,
-                debtImpact: 0,
-                historyImpact: 0,
-                utilizationImpact: 0,
-                feedback:
-                    "Generous! A larger down payment might help them qualify alone. Your credit stays protected.",
-                explanation:
-                    "One-time gifts don't create ongoing liability like co-signing does.",
+                    "Never co-sign unless you are willing and able to pay off the entire loan yourself immediately. It is the leading cause of family financial disputes.",
             },
         ],
     },
@@ -370,42 +359,30 @@ const scenarios = [
         id: 10,
         title: "The Old Card Dilemma",
         description:
-            "Your first credit card (now 5 years old) has no rewards. You never use it. It has no annual fee.",
+            "Your first credit card (5 years old) has no rewards and you never use it. It has $0 annual fee. What do you do?",
         choices: [
             {
-                text: "Close it - I have better cards",
-                scoreImpact: -20,
+                text: "Close the account",
+                scoreImpact: -25,
                 debtImpact: 0,
-                historyImpact: -15,
+                historyImpact: -20,
                 utilizationImpact: +15,
                 feedback:
-                    "Ouch! You just killed 5 years of credit history AND reduced your total available credit.",
+                    "Ouch! You just shortened your credit history and lowered your total available credit limit.",
                 explanation:
-                    "Length of credit history is 15% of your score. That old card was quietly helping you.",
+                    "Don't close your oldest accounts! 'Age of Credit' helps your score. If there is no annual fee, keep it open forever.",
             },
             {
-                text: "Keep it, use for small purchase monthly",
+                text: "Put a small subscription on it (autopay)",
                 scoreImpact: +10,
                 debtImpact: 0,
                 historyImpact: +10,
                 utilizationImpact: 0,
                 badge: "History Keeper",
                 feedback:
-                    "Perfect! A small recurring charge (like Spotify) keeps it active. That history keeps growing.",
+                    "Perfect strategy. You put Netflix on it and set up autopay. The card stays 'active' and your history grows.",
                 explanation:
-                    "Inactive cards might be closed by the issuer. A small monthly charge prevents this.",
-            },
-            {
-                text: "Ask for a product change to a rewards card",
-                scoreImpact: +15,
-                debtImpact: 0,
-                historyImpact: +5,
-                utilizationImpact: 0,
-                badge: "Card Upgrader",
-                feedback:
-                    "Brilliant! You keep the account age but get better rewards. No hard inquiry needed.",
-                explanation:
-                    "Product changes let you keep your credit history while getting a better card. Always ask!",
+                    "Banks will close accounts that are inactive for 6-12 months. A small recurring charge keeps the data flowing to the credit bureaus.",
             },
         ],
     },
@@ -413,30 +390,30 @@ const scenarios = [
         id: 11,
         title: "The Rent Reporting Opportunity",
         description:
-            "A service offers to report your on-time rent payments to credit bureaus for $5/month. You've never missed rent.",
+            "A service offers to report your on-time rent payments to credit bureaus for $5/month. You have a 'thin' credit file (not much history).",
         choices: [
             {
                 text: "Sign up immediately!",
-                scoreImpact: +25,
+                scoreImpact: +30,
                 debtImpact: +5,
                 historyImpact: +20,
                 utilizationImpact: 0,
                 badge: "Rent Reporter",
                 feedback:
-                    "Great for thin credit files! Your 2 years of on-time rent now counts toward payment history.",
+                    "Great for beginners! This adds a new 'tradeline' to your report showing consistent on-time payments.",
                 explanation:
-                    "Rent reporting can add positive payment history, especially helpful for those new to credit.",
+                    "Rent is usually not reported. For students or young adults, paying for a reporting service can fast-track your score into the 700s.",
             },
             {
-                text: "Pass - my credit is already good",
+                text: "Pass - I have 5 credit cards already",
                 scoreImpact: 0,
                 debtImpact: 0,
                 historyImpact: 0,
                 utilizationImpact: 0,
                 feedback:
-                    "Fair point if you already have strong credit. The benefit is smaller for established credit profiles.",
+                    "Correct. If you already have established credit, rent reporting has diminishing returns.",
                 explanation:
-                    "Rent reporting helps most when you have limited credit history or are rebuilding.",
+                    "Rent reporting is a 'credit builder' tool. Once you have a mortgage or auto loan, rent reporting becomes unnecessary noise.",
             },
         ],
     },
@@ -444,30 +421,19 @@ const scenarios = [
         id: 12,
         title: "The Big Purchase Decision",
         description:
-            "You're buying a $1,200 laptop. You can pay cash, use credit card (3% rewards), or use the store's 0% financing for 12 months.",
+            "You're buying a $1,200 laptop. Options: Cash, Credit Card (3% rewards), or Store Financing (0% for 12 months).",
         choices: [
             {
-                text: "Pay cash",
-                scoreImpact: 0,
-                debtImpact: 0,
-                historyImpact: 0,
-                utilizationImpact: 0,
-                feedback:
-                    "Safe choice. No debt, no risk. But you missed out on $36 in rewards.",
-                explanation:
-                    "Cash is king for avoiding debt, but you lose credit card protections and rewards.",
-            },
-            {
-                text: "Credit card + pay in full",
+                text: "Credit card + Pay in Full",
                 scoreImpact: +5,
                 debtImpact: 0,
                 historyImpact: +5,
                 utilizationImpact: +5,
                 badge: "Rewards Maximizer",
                 feedback:
-                    "Optimal play! You earned $36 in rewards, got purchase protection, and paid no interest.",
+                    "Optimal play! You earned $36 in cashback, got extended warranty protection, and paid $0 interest.",
                 explanation:
-                    "Paying in full each month lets you profit from credit cards instead of them profiting from you.",
+                    "Credit cards offer purchase protections (warranty extension, theft protection) that cash and debit cards do not. As long as you pay in full, it's the best method.",
             },
             {
                 text: "Store 0% financing",
@@ -476,20 +442,112 @@ const scenarios = [
                 historyImpact: -5,
                 utilizationImpact: 0,
                 feedback:
-                    "Risky! Store cards often have deferred interest - miss ONE payment and you owe ALL back interest at 29%+ APR.",
+                    "Risky. If you have $1 left on the balance after 12 months, you will owe back-interest on the WHOLE $1,200.",
                 explanation:
-                    "Deferred interest is different from 0% APR. Read the fine print carefully!",
+                    "This is called 'Deferred Interest.' It is a trap. If you miss the deadline by one day, you are charged ~29% interest dating back to day one.",
             },
             {
-                text: "Credit card + minimum payments",
-                scoreImpact: -15,
-                debtImpact: +1200,
+                text: "Pay with Debit Card",
+                scoreImpact: 0,
+                debtImpact: 0,
                 historyImpact: 0,
-                utilizationImpact: +35,
+                utilizationImpact: 0,
                 feedback:
-                    "You got rewards but now have $1,200 in debt at high interest. This could cost you $300+ extra.",
+                    "Safe, but you missed out. No rewards, and debit cards have weaker fraud protection if the number is stolen.",
                 explanation:
-                    "Credit card rewards never outweigh carrying a balance. The math always favors paying in full.",
+                    "If a hacker drains your debit card, actual cash is gone from your checking account. If they use your credit card, it's the bank's money, not yours.",
+            },
+        ],
+    },
+    {
+        id: 13,
+        title: "Buy Now, Pay Later (BNPL)",
+        description:
+            "You are buying $200 sneakers. The checkout offers '4 interest-free payments of $50' via an app like Klarna or Afterpay.",
+        choices: [
+            {
+                text: "Use BNPL",
+                scoreImpact: 0,
+                debtImpact: +200,
+                historyImpact: 0,
+                utilizationImpact: 0,
+                feedback:
+                    "It feels easy, but be careful. Most BNPL loans do NOT help your credit score, but they CAN hurt it if you miss a payment.",
+                explanation:
+                    "BNPL is a 'phantom debt.' Lenders often don't see it, so it doesn't build credit history. However, if you default, they send it to collections, which ruins your score.",
+            },
+            {
+                text: "Put it on Credit Card (Pay in full)",
+                scoreImpact: +5,
+                debtImpact: 0,
+                historyImpact: +5,
+                utilizationImpact: +5,
+                badge: "Credit Builder",
+                feedback:
+                    "Better choice. You get credit card rewards and the payment history actually counts toward your score.",
+                explanation:
+                    "If you can afford the item, using a standard credit card builds your score. BNPL is often a psychological trick to make you spend money you don't have.",
+            },
+        ],
+    },
+    {
+        id: 14,
+        title: "The Suspicious Text",
+        description:
+            "You get a text: 'URGENT: Your bank account is frozen due to fraud. Click here to verify identity.'",
+        choices: [
+            {
+                text: "Click the link and log in",
+                scoreImpact: -100,
+                debtImpact: +5000,
+                historyImpact: -50,
+                utilizationImpact: +100,
+                feedback:
+                    "You were Phished! The site was fake. Hackers now have your login and drained your account.",
+                explanation:
+                    "Banks never send links asking you to log in via text. This is 'Smishing' (SMS Phishing). The urgency is a manipulation tactic.",
+            },
+            {
+                text: "Call the number on the back of your card",
+                scoreImpact: 0,
+                debtImpact: 0,
+                historyImpact: 0,
+                utilizationImpact: 0,
+                badge: "Security Expert",
+                feedback:
+                    "Correct. You verified with the bank directly. The text was a scam, and your account is safe.",
+                explanation:
+                    "Always use a trusted source (the number on your physical card) to contact your bank. Never trust inbound texts or calls.",
+            },
+        ],
+    },
+    {
+        id: 15,
+        title: "The Annual Fee Card",
+        description:
+            "You are looking at a premium travel card. It has a $95 annual fee, but offers better points on dining and travel.",
+        choices: [
+            {
+                text: "Get the card",
+                scoreImpact: -5,
+                debtImpact: -95,
+                historyImpact: 0,
+                utilizationImpact: 0,
+                feedback:
+                    "It depends! Do you spend enough to offset the fee? If you earn $150 in rewards, you're ahead by $55.",
+                explanation:
+                    "Annual fee cards are only worth it if the 'Effective Value' (Rewards - Fee) is higher than a free card. You need to do the math on your yearly spending.",
+            },
+            {
+                text: "Stick to no-fee cards",
+                scoreImpact: -5,
+                debtImpact: 0,
+                historyImpact: 0,
+                utilizationImpact: 0,
+                feedback:
+                    "Safe bet. There are plenty of great cards with $0 annual fees that earn 2% cash back.",
+                explanation:
+                    "For most casual spenders, no-fee cards are the best option. You don't have to worry about 'breaking even' on the card cost.",
             },
         ],
     },
