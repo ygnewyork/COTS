@@ -8,17 +8,42 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        // Capital One-esque Color Overrides
+        purple: {
+          50: '#fef2f2',
+          100: '#fee2e2',
+          200: '#fecaca',
+          300: '#fca5a5',
+          400: '#f87171',
+          500: '#D22E1E', // CapOne Red (Primary Accent)
+          600: '#b91c1c',
+          700: '#991b1b',
+          800: '#7f1d1d',
+          900: '#450a0a',
+        },
+        blue: {
+          50: '#f0f9ff',
+          100: '#e0f2fe',
+          200: '#bae6fd',
+          300: '#7dd3fc',
+          400: '#38bdf8',
+          500: '#004977', // CapOne Navy (Primary Brand)
+          600: '#0284c7',
+          700: '#0369a1',
+          800: '#075985',
+          900: '#0c4a6e',
+        },
         'clarity': {
-          'dark': '#0a0a0f',
-          'darker': '#050508',
-          'card': '#12121a',
-          'border': '#1e1e2e',
-          'purple': '#8b5cf6',
-          'blue': '#3b82f6',
-          'cyan': '#06b6d4',
+          'dark': '#001020',
+          'darker': '#000810',
+          'card': '#001830',
+          'border': '#002845',
+          'purple': '#D22E1E', 
+          'blue': '#004977',
+          'cyan': '#0073BB',
           'green': '#10b981',
           'yellow': '#f59e0b',
-          'red': '#ef4444',
+          'red': '#D22E1E',
           'pink': '#ec4899',
         }
       },

@@ -9,6 +9,8 @@ import FutureTimeline from '@/components/FutureTimeline';
 import SimulatorPanel from '@/components/SimulatorPanel';
 import ClarityModeToggle from '@/components/ClarityModeToggle';
 import FactorCards from '@/components/FactorCards';
+import LearnCenter from '@/components/LearnCenter';
+import CreditGame from '@/components/CreditGame';
 import { userProfile } from '@/data/dummyData';
 
 export default function Home() {
@@ -49,20 +51,22 @@ export default function Home() {
               />
             </div>
 
-            <div className="flex justify-center gap-2 mb-8">
-              {['sandbox', 'timeline', 'simulator'].map((tab) => (
+            <div className="flex justify-center flex-wrap gap-2 mb-8">
+              {['sandbox', 'timeline', 'simulator', 'learn', 'game'].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
                   className={`px-6 py-3 rounded-xl font-medium transition-all ${
                     activeTab === tab
-                      ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white'
+                      ? 'bg-gradient-to-r from-clarity-red to-clarity-blue text-white shadow-lg shadow-clarity-red/20'
                       : 'bg-clarity-card text-gray-400 hover:text-white hover:bg-clarity-border'
                   }`}
                 >
-                  {tab === 'sandbox' && '🎮 Credit Sandbox'}
-                  {tab === 'timeline' && '📅 Future Timeline'}
-                  {tab === 'simulator' && '🔮 What-If Simulator'}
+                  {tab === 'sandbox' && '🎮 Sandbox'}
+                  {tab === 'timeline' && '📅 Timeline'}
+                  {tab === 'simulator' && '🔮 Simulator'}
+                  {tab === 'learn' && '📚 Learn'}
+                  {tab === 'game' && '🏆 Credit Game'}
                 </button>
               ))}
             </div>
@@ -109,6 +113,9 @@ export default function Home() {
                 <SimulatorPanel clarityMode={clarityMode} />
               </motion.div>
             )}
+
+            {activeTab === 'learn' && <LearnCenter />}
+            {activeTab === 'game' && <CreditGame />}
           </div>
         </section>
 
