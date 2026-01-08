@@ -18,17 +18,17 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState('sandbox');
 
   return (
-    <main className="min-h-screen bg-clarity-dark animated-bg">
+    <main className="min-h-screen bg-gray-50 font-sans">
+      {/* Background Decor */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl" />
+        <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-100 rounded-full blur-3xl opacity-50" />
+        <div className="absolute top-1/2 right-0 w-64 h-64 bg-red-50 rounded-full blur-3xl opacity-50" />
       </div>
 
       <div className="relative z-10">
         <Navbar />
         
-        <section className="pt-24 pb-8 px-6">
+        <section className="pt-28 pb-8 px-6">
           <div className="max-w-7xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -36,11 +36,11 @@ export default function Home() {
               transition={{ duration: 0.6 }}
               className="text-center mb-8"
             >
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                Welcome back, <span className="gradient-text">{userProfile.name}</span>
+              <h1 className="text-4xl md:text-6xl font-black mb-4 text-clarity-blue tracking-tight">
+                Welcome back, {userProfile.name}
               </h1>
-              <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-                Your credit sandbox is ready. Let's turn confusion into confidence.
+              <p className="text-gray-500 text-xl max-w-2xl mx-auto font-medium">
+                Banking reimagined for clarity.
               </p>
             </motion.div>
 
@@ -52,21 +52,20 @@ export default function Home() {
             </div>
 
             <div className="flex justify-center flex-wrap gap-2 mb-8">
-              {['sandbox', 'timeline', 'simulator', 'learn', 'game'].map((tab) => (
+              {['sandbox', 'timeline', 'simulator', 'game'].map((tab) => (
                 <button
                   key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-6 py-3 rounded-xl font-medium transition-all ${
+                  onClick={() => setActiveTab(tab)} // Removed Learn Tab
+                  className={`px-6 py-3 rounded-xl font-bold transition-all ${
                     activeTab === tab
-                      ? 'bg-gradient-to-r from-clarity-red to-clarity-blue text-white shadow-lg shadow-clarity-red/20'
-                      : 'bg-clarity-card text-gray-400 hover:text-white hover:bg-clarity-border'
+                      ? 'bg-clarity-blue text-white shadow-lg shadow-blue-900/10'
+                      : 'bg-white border border-gray-200 text-gray-500 hover:text-clarity-blue hover:border-clarity-blue'
                   }`}
                 >
-                  {tab === 'sandbox' && '🎮 Sandbox'}
-                  {tab === 'timeline' && '📅 Timeline'}
-                  {tab === 'simulator' && '🔮 Simulator'}
-                  {tab === 'learn' && '📚 Learn'}
-                  {tab === 'game' && '🏆 Credit Game'}
+                  {tab === 'sandbox' && 'Overview'}
+                  {tab === 'timeline' && 'Timeline'}
+                  {tab === 'simulator' && 'Simulator'}
+                  {tab === 'game' && 'Credit Game'}
                 </button>
               ))}
             </div>
@@ -114,7 +113,6 @@ export default function Home() {
               </motion.div>
             )}
 
-            {activeTab === 'learn' && <LearnCenter />}
             {activeTab === 'game' && <CreditGame />}
           </div>
         </section>

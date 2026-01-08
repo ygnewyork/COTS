@@ -74,15 +74,15 @@ export default function SimulatorPanel({ clarityMode }) {
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
-        className="bg-clarity-card rounded-2xl border border-clarity-border p-6"
+        className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm"
       >
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
-            <Sliders className="w-5 h-5 text-purple-400" />
+          <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+            <Sliders className="w-5 h-5 text-clarity-blue" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-white">What-If Simulator</h3>
-            <p className="text-sm text-gray-400">
+            <h3 className="text-lg font-semibold text-gray-900">What-If Simulator</h3>
+            <p className="text-sm text-gray-500">
               {clarityMode ? "Slide the bars to see what happens!" : "Adjust variables to simulate score changes"}
             </p>
           </div>
@@ -94,8 +94,8 @@ export default function SimulatorPanel({ clarityMode }) {
           <div>
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <CreditCard className="w-4 h-4 text-yellow-400" />
-                <span className="text-sm text-white">Credit Utilization</span>
+                <CreditCard className="w-4 h-4 text-yellow-500" />
+                <span className="text-sm text-gray-700">Credit Utilization</span>
               </div>
               <span className={`text-sm font-medium ${
                 utilization <= 30 ? 'text-green-400' : utilization <= 50 ? 'text-yellow-400' : 'text-red-400'
@@ -107,7 +107,7 @@ export default function SimulatorPanel({ clarityMode }) {
               max="100"
               value={utilization}
               onChange={(e) => setUtilization(parseInt(e.target.value))}
-              className="w-full h-2 bg-clarity-dark rounded-lg appearance-none cursor-pointer slider"
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
               style={{
                 background: `linear-gradient(to right, #10b981 0%, #10b981 30%, #f59e0b 30%, #f59e0b 50%, #ef4444 50%, #ef4444 100%)`
               }}
@@ -123,8 +123,8 @@ export default function SimulatorPanel({ clarityMode }) {
           <div>
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-green-400" />
-                <span className="text-sm text-white">On-Time Payments</span>
+                <Clock className="w-4 h-4 text-green-500" />
+                <span className="text-sm text-gray-700">On-Time Payments</span>
               </div>
               <span className={`text-sm font-medium ${
                 onTimePayments >= 95 ? 'text-green-400' : onTimePayments >= 90 ? 'text-yellow-400' : 'text-red-400'
@@ -136,7 +136,7 @@ export default function SimulatorPanel({ clarityMode }) {
               max="100"
               value={onTimePayments}
               onChange={(e) => setOnTimePayments(parseInt(e.target.value))}
-              className="w-full h-2 bg-clarity-dark rounded-lg appearance-none cursor-pointer"
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
             />
             {clarityMode && (
               <p className="text-xs text-gray-500 mt-1">
@@ -149,10 +149,10 @@ export default function SimulatorPanel({ clarityMode }) {
           <div>
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <Zap className="w-4 h-4 text-cyan-400" />
-                <span className="text-sm text-white">New Credit Applications</span>
+                <Zap className="w-4 h-4 text-cyan-500" />
+                <span className="text-sm text-gray-700">New Credit Applications</span>
               </div>
-              <span className="text-sm font-medium text-white">{newAccounts}</span>
+              <span className="text-sm font-medium text-gray-900">{newAccounts}</span>
             </div>
             <input
               type="range"
@@ -160,7 +160,7 @@ export default function SimulatorPanel({ clarityMode }) {
               max="5"
               value={newAccounts}
               onChange={(e) => setNewAccounts(parseInt(e.target.value))}
-              className="w-full h-2 bg-clarity-dark rounded-lg appearance-none cursor-pointer"
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
             />
             {clarityMode && (
               <p className="text-xs text-gray-500 mt-1">
@@ -173,10 +173,10 @@ export default function SimulatorPanel({ clarityMode }) {
           <div>
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
-                <DollarSign className="w-4 h-4 text-purple-400" />
-                <span className="text-sm text-white">Total Credit Limit</span>
+                <DollarSign className="w-4 h-4 text-clarity-blue" />
+                <span className="text-sm text-gray-700">Total Credit Limit</span>
               </div>
-              <span className="text-sm font-medium text-white">${creditLimit.toLocaleString()}</span>
+              <span className="text-sm font-medium text-gray-900">${creditLimit.toLocaleString()}</span>
             </div>
             <input
               type="range"
@@ -185,7 +185,7 @@ export default function SimulatorPanel({ clarityMode }) {
               step="1000"
               value={creditLimit}
               onChange={(e) => setCreditLimit(parseInt(e.target.value))}
-              className="w-full h-2 bg-clarity-dark rounded-lg appearance-none cursor-pointer"
+              className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
             />
             {clarityMode && (
               <p className="text-xs text-gray-500 mt-1">
@@ -202,7 +202,7 @@ export default function SimulatorPanel({ clarityMode }) {
             whileTap={{ scale: 0.98 }}
             onClick={calculateScore}
             disabled={isSimulating}
-            className="flex-1 py-3 bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl text-white font-medium flex items-center justify-center gap-2 disabled:opacity-50"
+            className="flex-1 py-3 bg-clarity-blue rounded-xl text-white font-medium flex items-center justify-center gap-2 disabled:opacity-50 shadow-lg shadow-blue-900/20"
           >
             {isSimulating ? (
               <>
@@ -220,7 +220,7 @@ export default function SimulatorPanel({ clarityMode }) {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={resetSimulation}
-            className="px-4 py-3 bg-clarity-dark rounded-xl text-gray-400 hover:text-white transition-colors"
+            className="px-4 py-3 bg-gray-100 rounded-xl text-gray-500 hover:text-gray-900 transition-colors border border-gray-200"
           >
             <RotateCcw className="w-5 h-5" />
           </motion.button>
@@ -234,14 +234,14 @@ export default function SimulatorPanel({ clarityMode }) {
         className="space-y-6"
       >
         {/* Score Comparison */}
-        <div className="bg-clarity-card rounded-2xl border border-clarity-border p-6">
-          <h4 className="text-sm font-medium text-gray-400 mb-4">Score Comparison</h4>
+        <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+          <h4 className="text-sm font-medium text-gray-600 mb-4">Score Comparison</h4>
           
           <div className="flex items-center justify-between gap-8">
             {/* Current Score */}
             <div className="text-center">
               <p className="text-xs text-gray-500 mb-2">Current</p>
-              <div className="text-4xl font-bold text-white">{userProfile.creditScore}</div>
+              <div className="text-4xl font-bold text-gray-900">{userProfile.creditScore}</div>
             </div>
 
             {/* Arrow */}
@@ -251,8 +251,8 @@ export default function SimulatorPanel({ clarityMode }) {
                 transition={{ repeat: Infinity, duration: 1.5 }}
                 className="flex items-center gap-2"
               >
-                <div className="h-0.5 w-16 bg-gradient-to-r from-gray-600 to-purple-500" />
-                <ChevronDown className="w-6 h-6 text-purple-400 rotate-[-90deg]" />
+                <div className="h-0.5 w-16 bg-gradient-to-r from-gray-300 to-clarity-blue" />
+                <ChevronDown className="w-6 h-6 text-clarity-blue rotate-[-90deg]" />
               </motion.div>
             </div>
 
@@ -264,7 +264,7 @@ export default function SimulatorPanel({ clarityMode }) {
                 initial={{ scale: 0.8 }}
                 animate={{ scale: 1 }}
                 className={`text-4xl font-bold ${
-                  scoreDiff > 0 ? 'text-green-400' : scoreDiff < 0 ? 'text-red-400' : 'text-white'
+                  scoreDiff > 0 ? 'text-green-500' : scoreDiff < 0 ? 'text-red-500' : 'text-gray-900'
                 }`}
               >
                 {simulatedScore}
@@ -286,8 +286,8 @@ export default function SimulatorPanel({ clarityMode }) {
         </div>
 
         {/* Quick Scenarios */}
-        <div className="bg-clarity-card rounded-2xl border border-clarity-border p-6">
-          <h4 className="text-sm font-medium text-gray-400 mb-4">Quick Scenarios</h4>
+        <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+          <h4 className="text-sm font-medium text-gray-600 mb-4">Quick Scenarios</h4>
           <div className="space-y-3">
             {simulationScenarios.map((scenario, index) => (
               <motion.button
@@ -296,7 +296,7 @@ export default function SimulatorPanel({ clarityMode }) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ scale: 1.01 }}
-                className="w-full flex items-center justify-between p-4 bg-clarity-dark rounded-xl hover:border-purple-500/30 border border-transparent transition-all text-left"
+                className="w-full flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:border-clarity-blue/30 border border-gray-100 transition-all text-left hover:shadow-sm"
                 onClick={() => {
                   if (scenario.id === 'pay-down-debt') {
                     setUtilization(20);
@@ -308,10 +308,10 @@ export default function SimulatorPanel({ clarityMode }) {
                 }}
               >
                 <div>
-                  <h5 className="text-white font-medium">{scenario.title}</h5>
+                  <h5 className="text-gray-900 font-medium">{scenario.title}</h5>
                   <p className="text-xs text-gray-500">{scenario.timeframe} • {scenario.difficulty}</p>
                 </div>
-                <span className="text-green-400 font-medium">{scenario.effect}</span>
+                <span className="text-green-600 font-medium">{scenario.effect}</span>
               </motion.button>
             ))}
           </div>
@@ -326,25 +326,25 @@ export default function SimulatorPanel({ clarityMode }) {
               exit={{ opacity: 0, y: 20 }}
               className={`rounded-2xl p-6 ${
                 scoreDiff > 0 
-                  ? 'bg-green-500/10 border border-green-500/30' 
+                  ? 'bg-green-50 border border-green-200' 
                   : scoreDiff < 0 
-                  ? 'bg-red-500/10 border border-red-500/30'
-                  : 'bg-clarity-card border border-clarity-border'
+                  ? 'bg-red-50 border border-red-200'
+                  : 'bg-white border border-gray-200'
               }`}
             >
               <div className="flex items-start gap-3">
                 <Info className={`w-5 h-5 mt-0.5 ${
-                  scoreDiff > 0 ? 'text-green-400' : scoreDiff < 0 ? 'text-red-400' : 'text-gray-400'
+                  scoreDiff > 0 ? 'text-green-600' : scoreDiff < 0 ? 'text-red-600' : 'text-gray-500'
                 }`} />
                 <div>
-                  <h4 className="font-medium text-white mb-2">
+                  <h4 className="font-medium text-gray-900 mb-2">
                     {scoreDiff > 0 
                       ? "🎉 Great choices!" 
                       : scoreDiff < 0 
                       ? "⚠️ Heads up!"
                       : "No change"}
                   </h4>
-                  <p className="text-sm text-gray-300">
+                  <p className="text-sm text-gray-600">
                     {clarityMode ? (
                       scoreDiff > 0 
                         ? `These changes could boost your score by ${scoreDiff} points! That's like going from a B to a B+ in credit class.`
@@ -376,19 +376,19 @@ export default function SimulatorPanel({ clarityMode }) {
           height: 20px;
           width: 20px;
           border-radius: 50%;
-          background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+          background: #004977;
           cursor: pointer;
           border: 2px solid white;
-          box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+          box-shadow: 0 2px 4px rgba(0, 73, 119, 0.3);
         }
         input[type="range"]::-moz-range-thumb {
           height: 20px;
           width: 20px;
           border-radius: 50%;
-          background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+          background: #004977;
           cursor: pointer;
           border: 2px solid white;
-          box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+          box-shadow: 0 2px 4px rgba(0, 73, 119, 0.3);
         }
       `}</style>
     </div>
