@@ -900,7 +900,7 @@ export default function ScenarioGame() {
                                 exit={{ opacity: 0 }}
                                 className="relative"
                             >
-                                {/* Mascot Section - Happy or Sad */}
+                                {/* Mascot Section - Happy or Sad or neutral */}
                                 <div className="flex items-end gap-4 mb-4">
                                     {/* Mascot Image - changes based on score */}
                                     <motion.div
@@ -920,13 +920,17 @@ export default function ScenarioGame() {
                                     >
                                         <img
                                             src={
-                                                feedback.scoreImpact >= 0
+                                                feedback.scoreImpact > 0
                                                     ? "/happy_mascot.png"
+                                                    : feedback.scoreImpact == 0
+                                                    ? "/neutral_mascot.png"
                                                     : "/sad_mascot.png"
                                             }
                                             alt={
                                                 feedback.scoreImpact >= 0
                                                     ? "Happy Advisor"
+                                                    : feedback.scoreImpact == 0
+                                                    ? "Neutral Advisor"
                                                     : "Sad Advisor"
                                             }
                                             className="w-28 h-28 md:w-36 md:h-36 object-contain drop-shadow-xl"
