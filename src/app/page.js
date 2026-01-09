@@ -110,7 +110,6 @@ export default function Home() {
         <footer className="border-t border-gray-200 py-8 px-6 bg-white">
           <div className="max-w-7xl mx-auto text-center text-gray-500 text-sm">
             <p>ClarityCapital • Teaching you the game, not just the score</p>
-            <p className="mt-2 text-xs">Demo Version • Data is simulated for demonstration</p>
           </div>
         </footer>
       </div>
