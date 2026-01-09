@@ -40,6 +40,14 @@ export default function CreditFactorGraph({ clarityMode }) {
     return isHovered ? baseSize * 1.3 : baseSize;
   };
 
+  const getShortLabel = (name) => {
+    if (name.includes('Utilization')) return 'Utilization';
+    if (name.includes('Age')) return 'Age';
+    if (name.includes('Mix')) return 'Mix';
+    if (name.includes('New')) return 'New';
+    return name.split(' ')[0];
+  };
+
   return (
     <motion.div ref={containerRef} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm relative overflow-hidden">
       <div className="flex items-center justify-between mb-4">
@@ -143,7 +151,7 @@ export default function CreditFactorGraph({ clarityMode }) {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5 + index * 0.08 }}
                 >
-                  {factor.name.split(' ')[0]}
+                  {getShortLabel(factor.name)}
                 </motion.text>
               </g>
             );
@@ -189,7 +197,7 @@ export default function CreditFactorGraph({ clarityMode }) {
 
         <AnimatePresence>
           {hoveredFactor && !selectedFactor && (
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white border border-gray-200 rounded-xl p-4 max-w-sm shadow-lg">
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-white border border-gray-200 rounded-xl p-4 max-w-sm shadow-lg pointer-events-none">
               {(() => {
                 const factor = creditFactors.find(f => f.id === hoveredFactor);
                 return (

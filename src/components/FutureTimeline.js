@@ -3,16 +3,20 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, Trash2, AlertCircle, CheckCircle, ArrowRight, Sparkles, Target, User } from 'lucide-react';
-import { creditFactors } from '@/data/dummyData';
+import { creditFactors, lifeEvents } from '@/data/dummyData';
 import { useUser } from '@/context/UserContext';
 
-
-const AVAILABLE_MILESTONES = [
-  { id: 'apartment', name: 'Rent Apartment', icon: '🏠', description: 'Plan for your first place' },
-  { id: 'car-loan', name: 'Finance a Car', icon: '🚗', description: 'Plan for an auto loan' },
-  { id: 'house', name: 'Buy a House', icon: '🏡', description: 'Plan for a mortgage' },
-  { id: 'credit-card', name: 'Open First Credit Card', icon: '💳', description: 'Start building credit' },
-];
+const getCategoryColor = (category) => {
+  switch (category) {
+    case 'credit': return 'text-purple-600 bg-purple-100';
+    case 'loan': return 'text-orange-600 bg-orange-100';
+    case 'housing': return 'text-green-600 bg-green-100';
+    case 'mortgage': return 'text-blue-600 bg-blue-100';
+    case 'debt': return 'text-red-600 bg-red-100';
+    case 'business': return 'text-indigo-600 bg-indigo-100';
+    default: return 'text-gray-600 bg-gray-100';
+  }
+};
 
 export default function FutureTimeline({ clarityMode }) {
   const years = [2026, 2027, 2028, 2029, 2030];
@@ -30,7 +34,7 @@ export default function FutureTimeline({ clarityMode }) {
   const currentScore = user.creditScore;
   const utilFactor = creditFactors.find(f => f.id === 'utilization');
 
-  const utilization = utilFactor ? parseInt(utilFactor.value) : 0; // "42% used" -> 42
+  const utilization = utilFactor ? parseInt(utilFactor.value) : 0; 
 
   const getPersonalizedChecklist = (eventId) => {
     switch(eventId) {
@@ -96,8 +100,7 @@ export default function FutureTimeline({ clarityMode }) {
     }
   };
 
-  const getEventName = (eventId) => AVAILABLE_MILESTONES.find(e => e.id === eventId)?.name || eventId;
-  const getEventIcon = (eventId) => AVAILABLE_MILESTONES.find(e => e.id === eventId)?.icon || '📅';
+  const getEventDetails = (eventId) => lifeEvents.find(e => e.id === eventId);
 
   const addEvent = (eventId, year) => {
     setPlannedEvents([...plannedEvents, { id: Date.now(), eventId, year, month: 'Jan' }]);
@@ -106,6 +109,15 @@ export default function FutureTimeline({ clarityMode }) {
   };
 
   const removeEvent = (id) => setPlannedEvents(plannedEvents.filter(e => e.id !== id));
+
+  const getProjectedScore = (year) => {
+    let scoreChange = 0;
+    plannedEvents.filter(e => e.year <= year).forEach(pe => {
+      const event = getEventDetails(pe.eventId);
+      if (event) scoreChange += event.scoreEffect.longTerm;
+    });
+    return Math.min(850, Math.max(300, currentScore + scoreChange));
+  };
 
   return (
     <div className="space-y-6">
@@ -125,6 +137,7 @@ export default function FutureTimeline({ clarityMode }) {
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="bg-white rounded-2xl border border-gray-200 p-6 overflow-x-auto shadow-sm">
         <div className="flex items-center gap-4 mb-8 min-w-[800px]">
           {years.map((year, index) => {
+            const projectedScore = getProjectedScore(year);
             const yearEvents = plannedEvents.filter(e => e.year === year);
             return (
               <motion.div key={year} initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }} className="flex-1">
@@ -133,16 +146,14 @@ export default function FutureTimeline({ clarityMode }) {
                   <div className="text-2xl font-bold text-gray-900 mb-1">{year}</div>
                   <div className="text-xs text-gray-500 mb-2">{year === 2026 ? 'Current Year' : `+${year - 2026} years`}</div>
                   
-                  {/* Replaced Score with Event Count or Empty State */}
-                  <div className="h-8 flex items-center justify-center"> 
-                      {yearEvents.length > 0 ? (
-                          <div className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 rounded-full">
-                           <span className="text-sm font-semibold text-clarity-blue">{yearEvents.length} Milestone{yearEvents.length > 1 ? 's' : ''}</span>
-                          </div>
-                      ) : (
-                          <span className="text-sm text-gray-400">Add Goal +</span>
-                      )}
-                  </div>
+                  <div className={`text-lg font-semibold ${projectedScore >= 740 ? 'text-green-600' : projectedScore >= 700 ? 'text-blue-600' : 'text-yellow-600'}`}>{projectedScore}</div>
+                  <div className="text-xs text-gray-400">projected</div>
+                  
+                  {yearEvents.length > 0 && (
+                      <div className="mt-2 inline-flex items-center gap-1 px-3 py-1 bg-blue-100 rounded-full">
+                       <span className="text-xs font-semibold text-clarity-blue">{yearEvents.length} Event{yearEvents.length > 1 ? 's' : ''}</span>
+                      </div>
+                  )}
                 </div>
               </motion.div>
             );
@@ -165,19 +176,21 @@ export default function FutureTimeline({ clarityMode }) {
           <h4 className="text-sm font-medium text-gray-400 mb-4">Planned Milestones</h4>
           <AnimatePresence>
             {plannedEvents.sort((a,b) => a.year - b.year).map((pe, index) => {
-              const eventDefined = AVAILABLE_MILESTONES.find(e => e.id === pe.eventId);
-              if (!eventDefined) return null;
+              const event = getEventDetails(pe.eventId);
+              if (!event) return null;
               return (
                 <motion.div key={pe.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }}
                   className="flex items-center gap-4 bg-gray-50 rounded-xl p-4 group border border-gray-100">
-                  <div className="text-3xl">{eventDefined.icon}</div>
+                  <div className="text-3xl">{event.icon}</div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                       {/* PERSONALIZED: Check if this year matches user desire */}
-                      <span className="font-medium text-gray-900">{eventDefined.name}</span>
+                      <span className="font-medium text-gray-900">{event.name}</span>
                       <span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-clarity-blue">{pe.year}</span>
+                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium uppercase tracking-wider ${getCategoryColor(event.category)}`}>
+                        {event.category}
+                      </span>
                     </div>
-                    <p className="text-sm text-gray-500">{eventDefined.description}</p>
+                    <p className="text-sm text-gray-500">{event.description}</p>
                   </div>
                   <button onClick={() => removeEvent(pe.id)} className="p-2 rounded-lg hover:bg-red-50 text-gray-500 hover:text-red-500 opacity-0 group-hover:opacity-100"><Trash2 className="w-4 h-4" /></button>
                 </motion.div>
@@ -196,13 +209,18 @@ export default function FutureTimeline({ clarityMode }) {
                 <button onClick={() => { setShowEventPicker(false); setSelectedYear(null); }} className="p-2 rounded-lg hover:bg-gray-100 text-gray-500">✕</button>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                {AVAILABLE_MILESTONES.map((event) => (
+                {lifeEvents.map((event) => (
                   <motion.button key={event.id} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => addEvent(event.id, selectedYear)}
                     className="bg-gray-50 rounded-xl p-4 text-left hover:border-blue-500/50 border border-gray-200 transition-all hover:bg-blue-50">
                     <div className="flex items-start gap-3">
                       <span className="text-3xl">{event.icon}</span>
                       <div className="flex-1">
-                        <h4 className="font-medium text-gray-900">{event.name}</h4>
+                        <div className="flex justify-between items-start mb-1">
+                          <h4 className="font-medium text-gray-900">{event.name}</h4>
+                          <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium uppercase tracking-wider ${getCategoryColor(event.category)}`}>
+                            {event.category}
+                          </span>
+                        </div>
                         <p className="text-xs text-gray-500 mb-2">{event.description}</p>
                       </div>
                     </div>
@@ -233,7 +251,7 @@ export default function FutureTimeline({ clarityMode }) {
                         
                         <div className="flex items-center justify-between mb-4">
                            <div className="flex items-center gap-2">
-                                <span className="text-2xl">{getEventIcon(pe.eventId)}</span>
+                                <span className="text-2xl">{getEventDetails(pe.eventId)?.icon}</span>
                                 <div>
                                     <h4 className="font-bold text-gray-900">{checklist.title}</h4>
                                     <span className="text-xs text-gray-500">Target: {pe.year}</span>
